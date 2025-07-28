@@ -29,6 +29,7 @@ backend/.env.test.local
 backend/.env.production.local
 backend/logs/
 backend/*.log
+.env
 
 # ─── DATABASE ───
 *.db
