@@ -143,3 +143,137 @@ body {
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
 }
+
+/* Container chính */
+#AI-container {
+  width: 500px;
+}
+
+/* Card chính */
+#AI-card {
+  background-color: #2d3748;
+  border-radius: 12px;
+  box-shadow: 0 10px 15px rgba(0, 0, 0, 0.2);
+  padding: 24px;
+  width: 100%;
+  max-width: 700px;
+}
+/* Tiêu đề */
+#AI-title {
+  font-size: 36px;
+  font-weight: 800;
+  color: #63b3ed;
+  margin-bottom: 24px;
+  text-align: center;
+}
+
+/* Form */
+#AI-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Nhóm câu hỏi */
+#question-group {
+  display: flex;
+  flex-direction: column;
+}
+
+#question-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #a0aec0;
+  margin-bottom: 8px;
+}
+
+#question-input {
+  width: 97%;
+  height: 100px;
+  padding: 12px;
+  background-color: #4a5568;
+  border: 1px solid #4a5568;
+  border-radius: 8px;
+  color: #e2e8f0;
+  font-size: 16px;
+  resize: vertical;
+}
+
+#question-input:focus {
+  outline: none;
+  border-color: #63b3ed;
+  box-shadow: 0 0 0 2px rgba(99, 179, 237, 0.4);
+}
+
+#question-input::placeholder {
+  color: #a0aec0;
+}
+
+/* Nhóm nút */
+#button-group {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+}
+
+#submit-button {
+  background-color: #3182ce;
+  color: #ffffff;
+  font-weight: 600;
+  padding: 8px 16px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+#submit-button:hover:not(:disabled) {
+  background-color: #2b6cb0;
+}
+
+#submit-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+#mode-buttons {
+  display: flex;
+  gap: 8px;
+}
+
+/* #think-button,
+#deepsearch-button {
+  background-color: #4a5568;
+  color: #ffffff;
+  padding: 8px 12px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+#think-button:hover,
+#deepsearch-button:hover {
+  background-color: #718096;
+} */
+
+/* Phản hồi */
+#response-section {
+  margin-top: 24px;
+  padding: 16px;
+  background-color: #4a5568;
+  border-radius: 8px;
+}
+
+#response-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #63b3ed;
+  margin-bottom: 8px;
+}
+
+#response-text {
+  font-size: 16px;
+  color: #e2e8f0;
+}
