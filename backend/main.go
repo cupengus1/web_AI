@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"os"
 
@@ -12,90 +12,86 @@ import (
 	"github.com/joho/godotenv"
 )
 
-// Cấu trúc nhận từ frontend
+// Struct request từ frontend
 type AskRequest struct {
 	Question string `json:"question"`
 }
 
-// Cấu trúc gửi lại frontend
+// Struct phản hồi gửi lại frontend
 type AskResponse struct {
 	Answer string `json:"answer"`
 }
 
-// Cấu trúc request gửi AIMLAPI
-type AIMLAPIRequest struct {
-	Model    string         `json:"model"`
-	Messages []MessageEntry `json:"messages"`
+// Struct gọi Mistral API
+type MistralRequest struct {
+	Model    string           `json:"model"`
+	Messages []MistralMessage `json:"messages"`
 }
 
-type MessageEntry struct {
-	Role    string `json:"role"` // Chỉ được "user" hoặc "assistant"
+type MistralMessage struct {
+	Role    string `json:"role"`
 	Content string `json:"content"`
 }
 
-// Cấu trúc phản hồi từ AIMLAPI
-type AIMLAPIResponse struct {
+// Struct nhận từ Mistral API
+type MistralResponse struct {
 	Choices []struct {
-		Message MessageEntry `json:"message"`
+		Message MistralMessage `json:"message"`
 	} `json:"choices"`
-	Error *struct {
-		Message string `json:"message"`
-		Code    any    `json:"code"`
-	} `json:"error,omitempty"`
 }
 
 func main() {
+	// Load biến môi trường từ .env
 	err := godotenv.Load()
 	if err != nil {
-		panic("❌ Không thể đọc file .env")
+		panic("❌ Thiếu file .env")
 	}
 
-	apiKey := os.Getenv("AIML_API_KEY")
+	apiKey := os.Getenv("MISTRAL_API_KEY")
 	if apiKey == "" {
-		panic("❌ Thiếu AIML_API_KEY trong .env")
+		panic("❌ Thiếu MISTRAL_API_KEY trong .env")
 	}
 
-	r := gin.Default()
+	router := gin.Default()
 
-	r.POST("/ask", func(c *gin.Context) {
+	router.POST("/ask", func(c *gin.Context) {
 		var req AskRequest
 		if err := c.ShouldBindJSON(&req); err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{"error": "Yêu cầu không hợp lệ"})
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Dữ liệu không hợp lệ"})
 			return
 		}
 
-		answer, err := callAIMLAPI(req.Question, apiKey)
+		answer, err := callMistralAPI(req.Question, apiKey)
 		if err != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Lỗi gọi Mistral: " + err.Error()})
 			return
 		}
 
 		c.JSON(http.StatusOK, AskResponse{Answer: answer})
 	})
 
-	r.Run(":8080")
+	router.Run(":8080")
 }
 
-func callAIMLAPI(question, apiKey string) (string, error) {
-	reqBody := AIMLAPIRequest{
-		Model: "google/gemma-3n-e4b-it",
-		Messages: []MessageEntry{
+func callMistralAPI(question, apiKey string) (string, error) {
+	// Body gửi tới Mistral
+	reqBody := MistralRequest{
+		Model: "mistral-large-latest", // hoặc model khác nếu bạn muốn
+		Messages: []MistralMessage{
 			{
 				Role:    "user",
-				Content: "Bạn là trợ lý AI hỗ trợ trả lời các quy trình nội bộ. " + question,
+				Content: question,
 			},
 		},
 	}
 
-	jsonData, err := json.Marshal(reqBody)
-	if err != nil {
-		return "", fmt.Errorf("Không thể mã hóa JSON: %v", err)
-	}
+	jsonData, _ := json.Marshal(reqBody)
 
-	req, err := http.NewRequest("POST", "https://api.aimlapi.com/v1/chat/completions", bytes.NewBuffer(jsonData))
+	req, err := http.NewRequest("POST", "https://api.mistral.ai/v1/chat/completions", bytes.NewBuffer(jsonData))
 	if err != nil {
 		return "", err
 	}
+
 	req.Header.Set("Authorization", "Bearer "+apiKey)
 	req.Header.Set("Content-Type", "application/json")
 
@@ -106,21 +102,20 @@ func callAIMLAPI(question, apiKey string) (string, error) {
 	}
 	defer resp.Body.Close()
 
-	body, _ := ioutil.ReadAll(resp.Body)
-	fmt.Println("AIMLAPI Raw Response:", string(body))
+	bodyBytes, _ := io.ReadAll(resp.Body)
 
-	var res AIMLAPIResponse
-	if err := json.Unmarshal(body, &res); err != nil {
-		return "", fmt.Errorf("Không thể phân tích phản hồi AIMLAPI: %v", err)
+	if resp.StatusCode != 200 {
+		return "", fmt.Errorf("Mistral trả về lỗi: %s", string(bodyBytes))
 	}
 
-	if res.Error != nil {
-		return "", fmt.Errorf("Lỗi AIMLAPI: %v", string(body))
+	var res MistralResponse
+	if err := json.Unmarshal(bodyBytes, &res); err != nil {
+		return "", err
 	}
 
 	if len(res.Choices) > 0 {
 		return res.Choices[0].Message.Content, nil
 	}
 
-	return "Không có phản hồi từ AI", nil
+	return "Không có phản hồi từ Mistral", nil
 }
