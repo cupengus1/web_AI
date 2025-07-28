@@ -13,10 +13,17 @@ function LoginForm() {
         // Kiểm tra đơn giản - thực tế nên gọi API đăng nhập
         if (email === 'admin@example.com' && password === '123456') {
             console.log('Đăng nhập thành công');
-            navigate('/user'); // <-- ĐIỀU HƯỚNG ĐẾN TRANG AIChat
-        } else {
+            //navigate('/user'); // <-- ĐIỀU HƯỚNG ĐẾN TRANG AIChat
+            navigate('/admin');
+        } 
+        else if (email === 'user1@gmail.com' && password === '12345678') {
+                console.log('Đăng nhập thành công');
+                navigate('/user'); // <-- ĐIỀU HƯỚNG ĐẾN TRANG AIChat 
+            }
+        else {
             alert('Email hoặc mật khẩu không đúng!');
         }
+        
     };
 
     return (
