@@ -14,12 +14,25 @@ function AIChat() {
                 setResponse('');
 
                 try {
-                    // Giả lập API call - Thay bằng API thực tế của bạn
-                    await new Promise(resolve => setTimeout(resolve, 1000)); // Giả lập độ trễ
-                    const mockResponse = `Đây là phản hồi giả lập cho câu hỏi: "${question}"`;
-                    setResponse(mockResponse);
+                    const response = await fetch('http://localhost:8080/ask', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            question: question
+                        })
+                    });
+
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+
+                    const data = await response.json();
+                    setResponse(data.answer || 'Không có phản hồi từ AI');
                 } catch (error) {
-                    setResponse('Đã xảy ra lỗi. Vui lòng thử lại.');
+                    console.error('Error calling API:', error);
+                    setResponse('Đã xảy ra lỗi khi gọi API. Vui lòng kiểm tra kết nối và thử lại.');
                 } finally {
                     setIsLoading(false);
                 }
@@ -60,7 +73,7 @@ function AIChat() {
                             </div>
                         </form>
                         {response && (
-                            <div className="mt-6 p-4 bg-gray-50 rounded-lg" id="mode-buttons" id="response-section" id="response-title">
+                            <div className="mt-6 p-4 bg-gray-50 rounded-lg" id="response-section">
                                 <h3 className="text-lg font-semibold text-gray-800 mb-2">Phản hồi từ AI:</h3>
                                 <p className="text-gray-700" id="response-text">{response}</p>
                             </div>
