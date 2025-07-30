@@ -53,7 +53,7 @@ function AIChat() {
                     {/* Thêm header cho trang */}
                     <header className="header">
                         <div className="logo-container">
-                            <Link to="/" className="logo"> AI-D-K </Link>
+                            <Link to="/user" className="logo"> AI-D-K </Link>
                         </div>
                         <div className="auth-container">
                             <button className="auth-icon" onClick = {toggleMenu} id="auth-icon">
