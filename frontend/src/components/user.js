@@ -1,10 +1,13 @@
 import React, { useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
 import '../index.css';
 
 function AIChat() {
             const [question, setQuestion] = useState('');
             const [response, setResponse] = useState('');
             const [isLoading, setIsLoading] = useState(false);
+            const [isMenuOpen, setIsMenuOpen] = useState(false);
+            const navigate = useNavigate();
 
             const handleSubmit = async (e) => {
                 e.preventDefault();
@@ -37,34 +40,70 @@ function AIChat() {
                     setIsLoading(false);
                 }
             };
-
+            //Nút menu icon đăng nhập, đăng ký
+            const toggleMenu = () => {
+                setIsMenuOpen(!isMenuOpen);
+            };
+            const handleLoginClick = () => {
+                setIsMenuOpen(false);
+                navigate('/login');
+            };
             return (
-                <div className="min-h-screen bg-gray-100 flex flex-col items-center p-4" id ="AI-container">
-                    <div className="w-full max-w-2xl bg-white rounded-lg shadow-md p-6" id="AI-card">
-                        <h2 className="text-2xl font-bold mb-6 text-center text-gray-800" id="AI-title">Trò chuyện với AI</h2>
+                <div id ="AI-container">
+                    {/* Thêm header cho trang */}
+                    <header className="header">
+                        <div className="logo-container">
+                            <Link to="/" className="logo"> AI-D-K </Link>
+                        </div>
+                        <div className="auth-container">
+                            <button className="auth-icon" onClick = {toggleMenu} id="auth-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" 
+                                viewBox="0 0 24 24" 
+                                fill="none" 
+                                stroke="currentColor" 
+                                strokeWidth="2" 
+                                strokeLinecap="round" 
+                                strokeLinejoin="round" 
+                                className="icon">
+                                    <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4z"></path>
+                                    <path d="M12 13c-3.31 0-6 2.69-6 6v1h12v-1c0-3.31-2.69-6-6-6z"></path>
+                                </svg>
+                            </button>
+                        {isMenuOpen && (
+                            <div className="auth-menu">
+                            <button className="login-button-user" id="login-button-user" onClick={handleLoginClick}>
+                               <a href=""></a> Đăng nhập
+                            </button>
+                            <button className="register-button" id="register-button">
+                                Đăng ký
+                            </button>
+                        </div>
+                        )}
+                        </div>
+                    </header>
+
+                    <div id="AI-card">
+                        <h2 id="AI-title">Trò chuyện với AI</h2>
                         <form onSubmit={handleSubmit} id="AI-form">
-                            <div className="mb-4" id="question-group">
-                                <label htmlFor="question" className="block text-gray-700 text-sm font-bold mb-2" id="question-label">
+                            <div id="question-group">
+                                <label htmlFor="question" id="question-label">
                                     Câu hỏi của bạn
                                 </label>
                                 <textarea
                                     id="question-input"
                                     value={question}
                                     onChange={(e) => setQuestion(e.target.value)}
-                                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500"
                                     placeholder="Nhập câu hỏi của bạn..."
                                     rows="4"
                                     required
                                     
                                 />
                             </div>
-                            <div className="flex justify-center" id="button-group">
+                            <div  id="button-group">
                                 <button
                                     type="submit"
                                     disabled={isLoading}
-                                    className={`bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline ${
-                                        isLoading ? 'opacity-50 cursor-not-allowed' : ''
-                                    }`}
+                                    className={isLoading ? ' opacity-50 cursor-not-allowed' : ''}
                                     id="submit-button"
                                 >
                                     {isLoading ? 'Đang xử lý...' : 'Gửi câu hỏi'}
@@ -73,9 +112,9 @@ function AIChat() {
                             </div>
                         </form>
                         {response && (
-                            <div className="mt-6 p-4 bg-gray-50 rounded-lg" id="response-section">
-                                <h3 className="text-lg font-semibold text-gray-800 mb-2">Phản hồi từ AI:</h3>
-                                <p className="text-gray-700" id="response-text">{response}</p>
+                            <div id="response-section">
+                                <h3 id="response-title">Phản hồi từ AI:</h3>
+                                <p  id="response-text">{response}</p>
                             </div>
                         )}
                     </div>
