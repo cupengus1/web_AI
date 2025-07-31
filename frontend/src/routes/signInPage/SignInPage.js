@@ -18,7 +18,8 @@ function SignInPage() {
         } 
         else if (email === 'user1@gmail.com' && password === '12345678') {
                 console.log('Đăng nhập thành công');
-                navigate('/dashboardPage'); // <-- ĐIỀU HƯỚNG ĐẾN TRANG AIChat 
+                localStorage.setItem("token", "user_token"); // lưu token
+                navigate('/dashboard'); // <-- ĐIỀU HƯỚNG ĐẾN TRANG AIChat 
             }
         else {
             alert('Email hoặc mật khẩu không đúng!');
