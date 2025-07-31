@@ -1,8 +1,8 @@
-import './dashboard.css'
+import './dashboardPage.css'
 
-const Dashboard = () => {
+const DashboardPage = () => {
     return (
     <div className='dashboard'> dashboard Page</div>
     )
 }
-export default Dashboard
+export default DashboardPage

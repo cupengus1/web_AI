@@ -1,8 +1,9 @@
 import './signUpPage.css'
 
-const homepage = () => {
+const SignUpPage = () => {
     return (
     <div className='signUpPage'> SignUp page</div>
     )
 }
 export default SignUpPage
+
