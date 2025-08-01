@@ -6,6 +6,7 @@ import (
 	"web_AI/services"
 
 	"github.com/gin-gonic/gin"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 func HandleAIChat(c *gin.Context) {
@@ -15,14 +16,41 @@ func HandleAIChat(c *gin.Context) {
 		return
 	}
 
-	answer, err := services.CallMistralAPI(req.Question)
+	// Lấy user ID từ JWT middleware (nếu có)
+	var userID string
+	if uid, exists := c.Get("user_id"); exists {
+		if objID, ok := uid.(primitive.ObjectID); ok {
+			userID = objID.Hex()
+		}
+	}
+
+	answer, err := services.CallMistralAPIWithHistory(userID, req.Question)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
-	// Lưu vào MongoDB
-	_ = services.SaveConversation("anonymous", req.Question, answer) // Sau này thay bằng userID
-
 	c.JSON(http.StatusOK, models.AskResponse{Answer: answer})
+}
+
+func GetHistory(c *gin.Context) {
+	userID, exists := c.Get("user_id")
+	if !exists {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
+		return
+	}
+
+	objID, ok := userID.(primitive.ObjectID)
+	if !ok {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid user ID"})
+		return
+	}
+
+	conversations, err := services.GetConversations(objID)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"conversations": conversations})
 }

@@ -4,6 +4,7 @@ go 1.24.5
 
 require (
 	github.com/gin-gonic/gin v1.10.1
+	github.com/golang-jwt/jwt/v4 v4.5.2
 	github.com/joho/godotenv v1.5.1
 )
 
@@ -41,7 +42,7 @@ require (
 	github.com/ugorji/go/codec v1.3.0 // indirect
 	go.mongodb.org/mongo-driver v1.17.4
 	golang.org/x/arch v0.19.0 // indirect
-	golang.org/x/crypto v0.40.0 // indirect
+	golang.org/x/crypto v0.40.0
 	golang.org/x/net v0.42.0 // indirect
 	golang.org/x/sys v0.34.0 // indirect
 	golang.org/x/text v0.27.0 // indirect

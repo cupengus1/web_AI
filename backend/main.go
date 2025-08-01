@@ -19,7 +19,7 @@ func main() {
 	}
 
 	// Kết nối MongoDB
-	config.ConnectMongo()
+	config.InitMongoDB()
 
 	// Khởi tạo Gin và route
 	router := gin.Default()

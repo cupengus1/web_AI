@@ -9,6 +9,18 @@ import (
 )
 
 func SetupRoutes(router *gin.Engine) {
-	router.Use(middleware.CORSMiddleware())
-	router.POST("/ask", handlers.HandleAIChat)
+	// Auth routes
+	router.POST("/api/auth/register", handlers.Register)
+	router.POST("/api/auth/login", handlers.Login)
+
+	// Protected routes
+	authGroup := router.Group("/api")
+	authGroup.Use(middleware.JWTAuth())
+	{
+		authGroup.POST("/chat", handlers.HandleAIChat)
+		authGroup.GET("/history", handlers.GetHistory)
+	}
+
+	// Public chat route (không cần đăng nhập)
+	router.POST("/api/chat/public", handlers.HandleAIChat)
 }

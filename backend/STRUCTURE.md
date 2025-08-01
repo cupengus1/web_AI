@@ -87,3 +87,15 @@ backend/
 - [ ] Migrate existing Mistral API code
 - [ ] Add database operations
 - [ ] Create API documentation
+
+| Chức năng                  | Mô tả ngắn                                           | Trạng thái    |
+| --------------------------------------------------------------------------------------------------| 
+| 🔐 Đăng ký / Đăng nhập    | Tạo tài khoản, đăng nhập trả JWT                      | 🟡 Chưa làm  |
+| ✅ Hỏi đáp AI             | Nhận câu hỏi → gọi Mistral API → trả lời              | ✅ Đã làm    |
+| 💬 Lưu lịch sử hỏi đáp    | Lưu câu hỏi & phản hồi vào DB theo UserID             | ⏳ Chưa làm  |
+| 🧾 API xem lịch sử        | Trả về danh sách câu hỏi - trả lời trước đó của user  | ⏳ Chưa làm  |
+| 🧑‍💼 Quản lý (Admin)        | Tạo/sửa/xoá quy trình nội bộ → tích hợp vào chatbot   | 🔲 Chưa làm  |
+| 🔐 Middleware xác thực JWT| Bảo vệ các route yêu cầu đăng nhập                    | ⏳ Chưa làm  |
+| 🌐 Kết nối MongoDB        | Cấu hình, kết nối và test thành công                  | ✅ Đã làm    |
+| 🧱 Cấu trúc backend       | Phân module: models, handlers, routes, middleware,... | ✅ Đã làm    |
+| 🔁 Tự động chuyển model khi AI lỗi                                                | ✅ Đã làm    |

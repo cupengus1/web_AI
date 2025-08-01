@@ -1,9 +1,7 @@
-// TODO: Kết nối MongoDB
 package config
 
 import (
 	"context"
-	"fmt"
 	"log"
 	"os"
 	"time"
@@ -14,14 +12,17 @@ import (
 
 var DB *mongo.Database
 
-func ConnectMongo() {
+func InitMongoDB() {
 	mongoURI := os.Getenv("MONGO_URI")
-	dbName := os.Getenv("MONGO_DB_NAME")
+	dbName := os.Getenv("MONGO_DB")
 
-	clientOpts := options.Client().ApplyURI(mongoURI)
-	client, err := mongo.NewClient(clientOpts)
+	if dbName == "" {
+		log.Fatal("❌ Database name is empty. Check MONGO_DB in your .env file")
+	}
+
+	client, err := mongo.NewClient(options.Client().ApplyURI(mongoURI))
 	if err != nil {
-		log.Fatal("❌ Tạo MongoDB client thất bại:", err)
+		log.Fatal("❌ Error creating Mongo client:", err)
 	}
 
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
@@ -29,15 +30,14 @@ func ConnectMongo() {
 
 	err = client.Connect(ctx)
 	if err != nil {
-		log.Fatal("❌ Kết nối MongoDB thất bại:", err)
+		log.Fatal("❌ Error connecting to MongoDB:", err)
 	}
 
-	// Ping thử để chắc chắn kết nối thành công
 	err = client.Ping(ctx, nil)
 	if err != nil {
-		log.Fatal("❌ Không thể ping MongoDB:", err)
+		log.Fatal("❌ MongoDB ping failed:", err)
 	}
 
 	DB = client.Database(dbName)
-	fmt.Println("✅ Kết nối MongoDB thành công!")
+	log.Println("✅ Connected to MongoDB!")
 }

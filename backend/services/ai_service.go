@@ -12,6 +12,8 @@ import (
 	"time"
 
 	"web_AI/models"
+
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 // Simple rate limiter
@@ -21,6 +23,10 @@ var (
 )
 
 func CallMistralAPI(question string) (string, error) {
+	return CallMistralAPIWithHistory("", question)
+}
+
+func CallMistralAPIWithHistory(userID string, question string) (string, error) {
 	apiKey := os.Getenv("MISTRAL_API_KEY")
 	if apiKey == "" {
 		return "", fmt.Errorf("thiếu MISTRAL_API_KEY")
@@ -95,8 +101,19 @@ func CallMistralAPI(question string) (string, error) {
 		}
 
 		if len(res.Choices) > 0 {
+			answer := res.Choices[0].Message.Content
 			fmt.Printf("Successfully got response from model: %s\n", model)
-			return res.Choices[0].Message.Content, nil
+
+			// Lưu lịch sử nếu có userID
+			if userID != "" {
+				if objID, err := primitive.ObjectIDFromHex(userID); err == nil {
+					if err := SaveConversation(objID, question, answer); err != nil {
+						fmt.Printf("Error saving conversation: %v\n", err)
+					}
+				}
+			}
+
+			return answer, nil
 		}
 	}
 
