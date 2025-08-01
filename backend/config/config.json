@@ -1,0 +1,23 @@
+{
+  "app": {
+    "name": "Web AI Backend",
+    "version": "1.0.0",
+    "port": 8080
+  },
+  "database": {
+    "mongodb": {
+      "host": "localhost",
+      "port": 27017,
+      "name": "web_ai_db"
+    }
+  },
+  "api": {
+    "mistral": {
+      "base_url": "https://api.mistral.ai/v1",
+      "timeout": 30
+    }
+  },
+  "jwt": {
+    "expiry_hours": 24
+  }
+}
