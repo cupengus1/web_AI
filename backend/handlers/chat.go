@@ -1,11 +1,9 @@
-// TODO: Chat với AI (ask, history, new conversation)
 package handlers
 
 import (
 	"net/http"
-
-	"your_project_name/models"
-	"your_project_name/services"
+	"web_AI/models"
+	"web_AI/services"
 
 	"github.com/gin-gonic/gin"
 )
@@ -19,9 +17,12 @@ func HandleAIChat(c *gin.Context) {
 
 	answer, err := services.CallMistralAPI(req.Question)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Lỗi gọi Mistral: " + err.Error()})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
+
+	// Lưu vào MongoDB
+	_ = services.SaveConversation("anonymous", req.Question, answer) // Sau này thay bằng userID
 
 	c.JSON(http.StatusOK, models.AskResponse{Answer: answer})
 }
