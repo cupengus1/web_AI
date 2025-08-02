@@ -1,0 +1,177 @@
+.homepage{
+    display: flex;
+    align-items: center;
+    gap: 100px;
+    height: 100vh;
+    padding: 0 50px;
+}
+
+.homepage .left {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    text-align: center;
+}
+
+.homepage .left h1{
+    font-size: 128px;
+    background: linear-gradient(to right, #217bfe, #e55571);
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+    margin: 0;
+}
+
+.homepage .left h2{
+    font-size: 24px;
+    color: #333;
+    margin: 0;
+}
+
+.homepage .left h3{
+    font-weight: 400;
+    max-width: 70%;
+    color: #666;
+    margin: 0;
+}
+
+.homepage .left a{
+    padding: 15px 25px;
+    background-color: #217bfe;
+    color: white;
+    border-radius: 20px;
+    font-size: 14px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.homepage .left a:hover{
+    background-color: white;
+    color: #217bfe;
+    border: 1px solid #217bfe;
+}
+
+/* Homepage buttons container */
+.homepage-buttons {
+    display: flex;
+    gap: 20px;
+    margin-top: 20px;
+}
+
+/* Get Started button styling */
+.get-started-btn {
+    padding: 15px 25px;
+    background-color: #217bfe;
+    color: white;
+    border-radius: 20px;
+    font-size: 14px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    font-weight: 600;
+}
+
+.get-started-btn:hover {
+    background-color: white;
+    color: #217bfe;
+    border: 1px solid #217bfe;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(33, 123, 254, 0.3);
+}
+
+/* Login button styling */
+.login-btn {
+    padding: 15px 25px;
+    background-color: transparent;
+    color: #217bfe;
+    border: 2px solid #217bfe;
+    border-radius: 20px;
+    font-size: 14px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    font-weight: 600;
+}
+
+.login-btn:hover {
+    background-color: #217bfe;
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(33, 123, 254, 0.3);
+}
+
+.homepage .right{
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+}
+
+.homepage .right .imgContainer{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #140e2d;
+    border-radius: 50px;
+    width: 80%;
+    height: 50%;
+    position: relative;
+}
+
+.homepage .right .imgContainer .bgContainer {
+    width: 50%;
+    height: 100%;
+    overflow: hidden;
+    position: absolute;
+    top: 0;
+    left: 0;
+    border-radius: 50px;
+}
+
+.homepage .right .imgContainer .bot{
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    animation: 3s ease-in-out infinite alternate botAnimate;
+}
+
+@keyframes botAnimate {
+    0% {
+        transform: scale(1) rotate(0deg);
+    }
+    100%{
+        transform: scale(1.1) rotate(-5deg);
+    }
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .homepage {
+        flex-direction: column;
+        gap: 50px;
+        padding: 20px;
+    }
+    
+    .homepage .left h1 {
+        font-size: 64px;
+    }
+    
+    .homepage .right .imgContainer {
+        width: 100%;
+        height: 300px;
+    }
+    
+    .homepage-buttons {
+        flex-direction: column;
+        gap: 15px;
+        width: 100%;
+    }
+    
+    .get-started-btn,
+    .login-btn {
+        width: 100%;
+        text-align: center;
+    }
+}

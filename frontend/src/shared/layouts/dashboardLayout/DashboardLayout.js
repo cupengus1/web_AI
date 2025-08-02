@@ -1,0 +1,27 @@
+import React, { useEffect } from 'react'
+import './dashboardLayout.css'
+import { Outlet, useNavigate } from 'react-router-dom'
+
+const DashboardLayout = () => {
+  // const {userId, isLoaded} = useAuth()
+  const navigate = useNavigate()
+  
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if(!token) {
+      //Nếu không có token thì điều hướng về trang đăng nhập
+      navigate("/login");
+    }
+  }, [navigate]); //chỉ chạy khi navigate thay đổi
+  
+  return (
+    <div className='dashboardLayout'>
+        <div className='menu'>Menu</div>
+        <div className='content'>
+            <Outlet/>
+        </div>
+    </div>
+  )
+}
+
+export default DashboardLayout

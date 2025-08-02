@@ -1,0 +1,22 @@
+.dashboardLayout {
+  display: flex;
+  height: 100vh;
+}
+
+.dashboardLayout .menu {
+  flex: 0 0 250px;
+  background-color: #2d3748;
+  color: white;
+  padding: 1rem;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 1.2rem;
+}
+
+.dashboardLayout .content {
+  flex: 1;
+  padding: 2rem;
+  overflow-y: auto;
+}

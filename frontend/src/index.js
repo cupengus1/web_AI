@@ -1,61 +1,34 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
-import { createBrowserRouter, RouterProvider } from 'react-router-dom';
-import Homepage from './routes/homepage/Homepage';
-import DashboardPage from './routes/dashboardPage/DashboardPage';
-import ChatPage from './routes/chatPage/ChatPage';
-import RootLayout from './layouts/rootLayout/RootLayout';
-import DashboardLayout from './layouts/dashboarhLayout/DashboardLayout';
-//import LoginForm from './components/login';
-import SignUpPage from './routes/signUpPage/SignUpPage';
-import SignInPage from './routes/signInPage/SignInPage';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
-const router = createBrowserRouter([
-  {
-    element: <RootLayout/>,
-    children: [
-      {
-        path: "/",
-        element: <Homepage/>,
-      },
-      // {
-      //   path: "/login", 
-      //   element: <LoginForm/>,
-      // },
-      {
-        path: "/signUpPage",
-        element: <SignUpPage/>,
-      },
-      {
-        path: "/signInPage",
-        element: <SignInPage/>,
-      },
-      {
-        element: <DashboardLayout/>,
-        children: [
-          {
-            path: "/dashboard",
-            element: <DashboardPage/>,
-          },
-          {
-            path: "/dashboard/chats/:id",
-            element: <ChatPage/>,
-          },
-        ],
-      },
-    ],
-  },
-]);
+// Import components from feature-based structure
+import LoginForm from './shared/components/login';
+// import AIChat from './shared/components/user'; // Temporarily commented out
+import AdminDashboard from './features/admin/pages/AdminDashboard';
+import DashboardPage from './features/dashboard/pages/DashboardPage';
+import Homepage from './features/homepage/pages/Homepage';
+import SignUpPage from './features/auth/pages/SignUpPage';
+
+function App() {
+  return (
+    <Router>
+      <Routes>
+        <Route path="/" element={<Homepage />} />
+        <Route path="/login" element={<LoginForm />} />
+        <Route path="/dashboard" element={<DashboardPage />} />
+        {/* <Route path="/user" element={<AIChat />} /> */}
+        <Route path="/signup" element={<SignUpPage />} />
+        <Route path="/admin" element={<AdminDashboard />} />
+      </Routes>
+    </Router>
+  );
+}
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <RouterProvider router={router} />
+    <App />
   </React.StrictMode>
 );
-
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-

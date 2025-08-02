@@ -1,0 +1,245 @@
+/* ============================================= */
+/* PROCEDURES PAGE STYLES                      */
+/* ============================================= */
+
+.procedures-page {
+    animation: page-fade-in 0.5s ease-in-out;
+}
+
+/* Page Header */
+.page-header {
+    text-align: center;
+    padding: var(--space-xl) 0;
+    margin-bottom: var(--space-xl);
+}
+
+.page-header h1 {
+    font-size: 2.25rem; /* 36px */
+    font-weight: 800;
+    margin-bottom: var(--space-sm);
+}
+
+.page-header p {
+    font-size: 1.125rem; /* 18px */
+    color: var(--color-text-secondary);
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+/* Search & Filter Section */
+.search-section {
+    background-color: var(--color-bg-secondary);
+    padding: var(--space-lg);
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--shadow-md);
+    margin-bottom: var(--space-xxl);
+}
+
+.search-form {
+    display: flex;
+    gap: var(--space-md);
+    margin-bottom: var(--space-lg);
+}
+
+.search-input {
+    flex: 1;
+    padding: var(--space-sm) var(--space-md);
+    border: var(--border-width) solid var(--color-border);
+    border-radius: var(--border-radius-md);
+    font-size: 1rem;
+}
+.search-input:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px var(--color-primary-light);
+}
+
+.search-button {
+    background-color: var(--color-primary);
+    color: var(--color-text-light);
+    border: none;
+    padding: 0 var(--space-lg);
+    border-radius: var(--border-radius-md);
+    cursor: pointer;
+    font-weight: 600;
+    transition: var(--transition-fast);
+}
+.search-button:hover {
+    background-color: var(--color-primary-dark);
+}
+
+.filter-section {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+}
+
+.filter-section label {
+    font-weight: 600;
+}
+
+.category-select {
+    padding: var(--space-sm) var(--space-md);
+    border: var(--border-width) solid var(--color-border);
+    border-radius: var(--border-radius-md);
+    background-color: var(--color-bg-secondary);
+    cursor: pointer;
+}
+
+/* Procedures Grid */
+.procedures-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: var(--space-lg);
+    margin-bottom: var(--space-xxl);
+}
+
+.procedure-card {
+    background-color: var(--color-bg-secondary);
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--shadow-md);
+    display: flex;
+    flex-direction: column;
+    transition: var(--transition-fast);
+    border: var(--border-width) solid transparent;
+}
+
+.procedure-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-lg);
+    border-color: var(--color-primary);
+}
+
+.procedure-header {
+    padding: var(--space-lg);
+    border-bottom: var(--border-width) solid var(--color-border);
+}
+
+.procedure-header h3 {
+    font-size: 1.25rem; /* 20px */
+    font-weight: 700;
+    margin-bottom: var(--space-sm);
+}
+
+.procedure-category {
+    background-color: var(--color-primary-light);
+    color: var(--color-primary);
+    padding: var(--space-xs) var(--space-sm);
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    display: inline-block;
+}
+
+.procedure-description {
+    padding: var(--space-lg);
+    color: var(--color-text-secondary);
+    flex-grow: 1;
+    line-height: 1.6;
+}
+
+.procedure-meta {
+    display: flex;
+    justify-content: space-between;
+    padding: 0 var(--space-lg) var(--space-md);
+    font-size: 0.875rem;
+    color: var(--color-text-secondary);
+}
+
+.procedure-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-sm);
+    padding: var(--space-lg);
+    border-top: var(--border-width) solid var(--color-border);
+}
+
+.view-button, .ask-ai-button {
+    padding: var(--space-sm) var(--space-md);
+    border-radius: var(--border-radius-md);
+    text-decoration: none;
+    text-align: center;
+    font-weight: 600;
+    transition: var(--transition-fast);
+}
+
+.view-button {
+    background-color: var(--color-bg-tertiary);
+    color: var(--color-text-primary);
+}
+.view-button:hover {
+    background-color: var(--color-border);
+}
+
+.ask-ai-button {
+    background-color: var(--color-secondary);
+    color: var(--color-text-light);
+}
+.ask-ai-button:hover {
+    background-color: var(--color-secondary-dark);
+}
+
+/* No Procedures Found */
+.no-procedures {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: var(--space-xxl);
+    background-color: var(--color-bg-secondary);
+    border-radius: var(--border-radius-lg);
+}
+.no-procedures-icon {
+    font-size: 4rem;
+    margin-bottom: var(--space-md);
+}
+.no-procedures h3 {
+    font-size: 1.5rem;
+    margin-bottom: var(--space-sm);
+}
+
+/* Quick Help Section */
+.quick-help {
+    text-align: center;
+}
+.help-card {
+    background: linear-gradient(135deg, var(--color-primary-light), var(--color-bg-tertiary));
+    padding: var(--space-xl);
+    border-radius: var(--border-radius-lg);
+    max-width: 800px;
+    margin: 0 auto;
+}
+.help-card h3 {
+    font-size: 1.5rem;
+    margin-bottom: var(--space-sm);
+}
+.help-card p {
+    color: var(--color-text-secondary);
+    margin-bottom: var(--space-lg);
+}
+.help-actions {
+    display: flex;
+    gap: var(--space-md);
+    justify-content: center;
+}
+.help-button {
+    padding: var(--space-sm) var(--space-lg);
+    border-radius: var(--border-radius-md);
+    text-decoration: none;
+    font-weight: 600;
+    transition: var(--transition-fast);
+}
+.help-button.primary {
+    background-color: var(--color-primary);
+    color: var(--color-text-light);
+}
+.help-button.primary:hover {
+    background-color: var(--color-primary-dark);
+}
+.help-button.secondary {
+    background-color: var(--color-bg-secondary);
+    color: var(--color-text-primary);
+    border: var(--border-width) solid var(--color-border);
+}
+.help-button.secondary:hover {
+    background-color: var(--color-bg-tertiary);
+}
+
