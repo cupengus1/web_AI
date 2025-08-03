@@ -11,7 +11,7 @@ const Homepage = () => {
             <h3>Hello word</h3>
             <div className='homepage-buttons'>
                 <Link to="/dashboard" className='get-started-btn'>Get Started</Link>
-                <Link to="/login" className='login-btn'>Đăng nhập</Link>
+                <Link to="/signin" className='login-btn'>Đăng nhập</Link>
             </div>
         </div>
         <div className='right'>

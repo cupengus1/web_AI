@@ -1,38 +1,59 @@
-import React, { useState } from 'react'; // Ensure useState is imported
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { login, adminLogin } from '../../../shared/api/api';
 import "./SignInPage.css"
 
 function SignInPage() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState('');
     const navigate = useNavigate();
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-       // console.log('Login attempted with:', { email, password });
+        setIsLoading(true);
+        setError('');
 
-        // Kiểm tra đơn giản - thực tế nên gọi API đăng nhập
-        if (email === 'admin@example.com' && password === '123456') {
-            console.log('Đăng nhập thành công');
-            //navigate('/user'); // <-- ĐIỀU HƯỚNG ĐẾN TRANG AIChat
-            navigate('/admin');
-        } 
-        else if (email === 'user1@gmail.com' && password === '12345678') {
-                console.log('Đăng nhập thành công');
-                localStorage.setItem("token", "user_token"); // lưu token
-                navigate('/dashboard'); // <-- ĐIỀU HƯỚNG ĐẾN TRANG AIChat 
+        try {
+            // Thử đăng nhập admin trước
+            try {
+                const adminResponse = await adminLogin(email, password);
+                console.log('Admin login successful');
+                localStorage.setItem("adminToken", adminResponse.data.token);
+                navigate('/admin');
+                return;
+            } catch (adminError) {
+                // Nếu không phải admin, thử đăng nhập user
+                console.log('Not admin, trying user login...');
             }
-        else {
-            alert('Email hoặc mật khẩu không đúng!');
+
+            // Thử đăng nhập user
+            const userResponse = await login(email, password);
+            console.log('User login successful');
+            localStorage.setItem("token", userResponse.data.token);
+            navigate('/dashboard');
+
+        } catch (error) {
+            console.error('Login error:', error);
+            setError('Email hoặc mật khẩu không đúng!');
+        } finally {
+            setIsLoading(false);
         }
-        
     };
 
     return (
         <div className="login-container" id="login-container">
             <div className="login-card" id="login-card">
                 <h2 className="login-title">Đăng Nhập</h2>
-                <form>
+                
+                {error && (
+                    <div className="error-message">
+                        {error}
+                    </div>
+                )}
+
+                <form onSubmit={handleSubmit}>
                     <div className="form-group" id="email-group">
                         <label className="form-label" htmlFor="email">
                             Email
@@ -45,6 +66,7 @@ function SignInPage() {
                             className="form-input"
                             placeholder="Nhập email của bạn"
                             required
+                            disabled={isLoading}
                         />
                     </div>
                     <div className="form-group" id="password-group">
@@ -59,15 +81,16 @@ function SignInPage() {
                             className="form-input"
                             placeholder="Nhập mật khẩu"
                             required
+                            disabled={isLoading}
                         />
                     </div>
                     <div id="button-group">
                         <button
-                            onClick={handleSubmit}
                             className="login-button"
                             type="submit"
+                            disabled={isLoading}
                         >
-                            Đăng Nhập
+                            {isLoading ? 'Đang đăng nhập...' : 'Đăng Nhập'}
                         </button>
                         <a href="/forgot-password" className="forgot-password">
                             Quên mật khẩu

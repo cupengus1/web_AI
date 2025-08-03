@@ -246,3 +246,45 @@ REACT_APP_API_URL=http://localhost:8080
 **Lỗi 404**: Kiểm tra proxy config và backend routes
 **Token expired**: Implement refresh token logic
 **Connection refused**: Đảm bảo backend đang chạy trên port 8080
+
+Cấu trúc mới:
+1. DashboardLayout (Layout chính):
+✅ Sidebar: ChatList component
+✅ Main Content: Outlet cho các trang con
+✅ Authentication: Kiểm tra token và redirect
+✅ Responsive: Mobile-friendly
+2. ChatList (Sidebar):
+✅ Header: Logo và title
+✅ New Chat Button: Chuyển đến DashboardPage
+✅ Recent Chats: Hiển thị lịch sử chat từ localStorage
+✅ Upgrade Section: Promo cho Pro version
+✅ Logout Button: Đăng xuất và clear data
+3. DashboardPage (Trang chính):
+✅ Welcome Interface: Logo và options
+✅ Input Form: Nhập câu hỏi và chuyển sang ChatPage
+✅ Sample Questions: Click để có câu hỏi mẫu
+4. ChatPage (Trang chat):
+✅ Chat Interface: Hiển thị messages
+✅ AI Response Formatting: Từng câu trên một dòng
+✅ Chat History: Lưu vào localStorage
+✅ NewPrompt Component: Input để tiếp tục chat
+5. NewPrompt Component:
+✅ Input Field: Nhập câu hỏi mới
+✅ Submit Handling: Gửi message
+✅ Loading State: Disable khi đang gọi AI
+✅ Auto-scroll: Scroll xuống cuối
+🔄 Flow hoạt động:
+Đăng nhập → /signin
+Dashboard → /dashboard (với sidebar)
+Nhập câu hỏi → Chuyển sang /chat
+Chat với AI → Hiển thị kết quả từng câu
+Lưu history → Hiển thị trong sidebar
+Tiếp tục chat → Sử dụng NewPrompt
+Logout → Clear data và về signin
+�� Tính năng đặc biệt:
+✅ Persistent Chat History: Lưu trong localStorage
+✅ Auto-navigation: Từ Dashboard → Chat
+✅ Formatted AI Responses: Từng câu riêng biệt
+✅ Responsive Design: Hoạt động trên mobile
+✅ Authentication Flow: Kiểm tra token
+✅ Clean UI: Giao diện đẹp và intuitive

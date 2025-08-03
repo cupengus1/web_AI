@@ -9,9 +9,17 @@ const api = axios.create({
 
 // Interceptor để gắn token vào Header tự động
 api.interceptors.request.use((config) => {
-  const token = localStorage.getItem("token");
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
+  // Kiểm tra admin token trước
+  const adminToken = localStorage.getItem("adminToken");
+  if (adminToken) {
+    config.headers.Authorization = `Bearer ${adminToken}`;
+    return config;
+  }
+  
+  // Nếu không có admin token, kiểm tra user token
+  const userToken = localStorage.getItem("token");
+  if (userToken) {
+    config.headers.Authorization = `Bearer ${userToken}`;
   }
   return config;
 });

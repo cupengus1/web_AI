@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react'
 import './dashboardLayout.css'
 import { Outlet, useNavigate } from 'react-router-dom'
+import ChatList from '../../components/chatList/ChatList'
 
 const DashboardLayout = () => {
   // const {userId, isLoaded} = useAuth()
@@ -10,14 +11,16 @@ const DashboardLayout = () => {
     const token = localStorage.getItem("token");
     if(!token) {
       //Nếu không có token thì điều hướng về trang đăng nhập
-      navigate("/login");
+      navigate("/signin");
     }
   }, [navigate]); //chỉ chạy khi navigate thay đổi
   
   return (
     <div className='dashboardLayout'>
-        <div className='menu'>Menu</div>
-        <div className='content'>
+        <div className='sidebar'>
+            <ChatList />
+        </div>
+        <div className='main-content'>
             <Outlet/>
         </div>
     </div>

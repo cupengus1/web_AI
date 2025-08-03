@@ -2,65 +2,210 @@
     display: flex;
     flex-direction: column;
     height: 100%;
+    padding: 20px;
+    color: #ffffff;
+    background-color: #2d3748;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+}
+
+.chatList .header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #4a5568;
+}
+
+.chatList .header .logo-chatList {
+    width: 32px;
+    height: 32px;
+    object-fit: contain;
+}
+
+.chatList .header .title {
+    font-weight: 700;
+    font-size: 18px;
+    color: #4f46e5;
+    font-family: inherit;
+    line-height: 1.2;
+}
+
+.chatList .section {
+    margin-bottom: 20px;
+}
+
+.chatList .section-title {
+    font-weight: 600;
+    font-size: 12px;
+    color: #a0aec0;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 15px;
+    display: block;
+    font-family: inherit;
+}
+
+.chatList .new-chat-btn {
+    width: 100%;
+    padding: 12px 16px;
+    background-color: #4f46e5;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    margin-bottom: 10px;
+    font-family: inherit;
+    font-size: 14px;
+}
+
+.chatList .new-chat-btn:hover {
+    background-color: #4338ca;
+}
+
+.chatList .nav-link {
+    display: block;
+    padding: 10px 16px;
+    border-radius: 8px;
+    text-decoration: none;
+    color: #e2e8f0;
+    transition: background-color 0.2s;
+    margin-bottom: 5px;
+    font-size: 14px;
+    font-family: inherit;
+}
+
+.chatList .nav-link:hover {
+    background-color: #4a5568;
 }
 
 .chatList hr {
     border: none;
-    height: 2px;
-    background-color: #ddd;
-    opacity: 0.1;
-    border-radius: 5px;
-    margin: 20px 0px;
+    height: 1px;
+    background-color: #4a5568;
+    margin: 20px 0;
 }
 
-.chatList .title {
-    font-weight: 600;
-    font-size: 10px;
-    margin-bottom: 10px;
-}
-
-.chatList .list {
+.chatList .chat-history {
     display: flex;
     flex-direction: column;
-    overflow: scroll; 
+    gap: 5px;
 }
 
-.chatList a {
-    padding: 10px;
-    border-radius: 10px;
-    text-decoration: none;
-    color: inherit;
-    transition: background 0.2s;
+.chatList .chat-item {
+    padding: 10px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
 }
 
-.chatList a:hover {
-    background-color: #2c2937;
+.chatList .chat-item:hover {
+    background-color: #4a5568;
+}
+
+.chatList .chat-title {
+    font-size: 14px;
+    color: #e2e8f0;
+    font-weight: 500;
+    font-family: inherit;
+    line-height: 1.4;
+}
+
+.chatList .chat-date {
+    font-size: 12px;
+    color: #a0aec0;
+    font-family: inherit;
+}
+
+.chatList .no-chats {
+    padding: 20px;
+    text-align: center;
+    color: #a0aec0;
+    font-size: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    font-family: inherit;
 }
 
 .chatList .upgrade {
-   
-    margin-top: auto;       /* đẩy xuống đáy */
+    margin-top: auto;
     display: flex;
     align-items: center;
-    gap: 10px;
-    font-size: 12px;
-    
+    gap: 12px;
+    padding: 16px;
+    background-color: #4a5568;
+    border-radius: 8px;
+    margin-bottom: 20px;
 }
 
-.chatList .upgrade img {
+.chatList .upgrade .logo-chatList {
     width: 24px;
     height: 24px;
+    object-fit: contain;
 }
 
 .chatList .upgrade .texts {
     display: flex;
     flex-direction: column;
+    gap: 2px;
 }
 
 .chatList .upgrade .texts span:first-child {
     font-weight: 600;
+    font-size: 12px;
+    color: #e2e8f0;
+    font-family: inherit;
 }
 
 .chatList .upgrade .texts span:last-child {
-    color: #888;
+    color: #a0aec0;
+    font-size: 11px;
+    font-family: inherit;
+}
+
+.chatList .footer {
+    margin-top: auto;
+}
+
+.chatList .logout-btn {
+    width: 100%;
+    padding: 12px 16px;
+    background-color: #dc2626;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    font-family: inherit;
+    font-size: 14px;
+}
+
+.chatList .logout-btn:hover {
+    background-color: #b91c1c;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .chatList {
+        padding: 15px;
+    }
+    
+    .chatList .header {
+        margin-bottom: 20px;
+    }
+    
+    .chatList .header .title {
+        font-size: 16px;
+    }
+    
+    .chatList .upgrade {
+        margin-bottom: 15px;
+    }
 }

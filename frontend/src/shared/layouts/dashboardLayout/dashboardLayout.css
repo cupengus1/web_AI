@@ -1,22 +1,34 @@
 .dashboardLayout {
   display: flex;
   height: 100vh;
+  background-color: #1a1a1a;
 }
 
-.dashboardLayout .menu {
-  flex: 0 0 250px;
+.dashboardLayout .sidebar {
+  flex: 0 0 300px;
   background-color: #2d3748;
-  color: white;
-  padding: 1rem;
-  display: flex;
-  align-items: flex-start;
-  justify-content: center;
-  font-weight: bold;
-  font-size: 1.2rem;
+  border-right: 1px solid #4a5568;
+  overflow-y: auto;
 }
 
-.dashboardLayout .content {
+.dashboardLayout .main-content {
   flex: 1;
-  padding: 2rem;
   overflow-y: auto;
+  background-color: #1a1a1a;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .dashboardLayout {
+    flex-direction: column;
+  }
+  
+  .dashboardLayout .sidebar {
+    flex: 0 0 auto;
+    max-height: 200px;
+  }
+  
+  .dashboardLayout .main-content {
+    flex: 1;
+  }
 }

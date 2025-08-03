@@ -12,6 +12,9 @@ func SetupRoutes(router *gin.Engine) {
 	// Auth routes
 	router.POST("/api/auth/register", handlers.Register)
 	router.POST("/api/auth/login", handlers.Login)
+	
+	// Admin routes
+	router.POST("/api/admin/login", handlers.AdminLogin)
 
 	// Protected routes
 	authGroup := router.Group("/api")

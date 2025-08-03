@@ -5,6 +5,7 @@
     align-items: center;
     position: relative;
     background-color: #1a1a1a;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
 }
 
 .chatPage .wrapper {
@@ -25,6 +26,7 @@
     padding: 20px;
     color: #f1f1f1; /* chữ sáng */
     margin: 10px 0;
+    font-family: inherit;
 }
 
 .chatPage .wrapper .chat .message.user{
@@ -33,4 +35,76 @@
     border-radius: 20px;
     max-width: 80%;
     align-self: flex-end;
+}
+
+.chatPage .wrapper .chat .message.ai{
+    background-color: #3b3b3b;
+    color: #ffffff;
+    border-radius: 20px;
+    max-width: 80%;
+    align-self: flex-start;
+    border-left: 4px solid #4f46e5;
+}
+
+.chatPage .wrapper .chat .message.error{
+    background-color: #dc2626;
+    color: #ffffff;
+    border-radius: 20px;
+    max-width: 80%;
+    align-self: center;
+    text-align: center;
+    font-weight: 500;
+}
+
+/* AI Message Content Styles */
+.chatPage .wrapper .chat .message.ai .ai-message-content {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.chatPage .wrapper .chat .message.ai .ai-sentence {
+    line-height: 1.6;
+    padding: 4px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    font-family: inherit;
+}
+
+.chatPage .wrapper .chat .message.ai .ai-sentence:last-child {
+    border-bottom: none;
+}
+
+.chatPage .wrapper .chat .message.ai .ai-sentence strong {
+    color: #4f46e5;
+    font-weight: 600;
+}
+
+/* Loading animation for AI message */
+.chatPage .wrapper .chat .message.ai.loading {
+    background-color: #374151;
+    color: #9ca3af;
+    font-style: italic;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .chatPage .wrapper .chat {
+        width: 90%;
+    }
+    
+    .chatPage .wrapper .chat .message {
+        padding: 15px;
+        margin: 8px 0;
+    }
+    
+    .chatPage .wrapper .chat .message.user,
+    .chatPage .wrapper .chat .message.ai,
+    .chatPage .wrapper .chat .message.error {
+        max-width: 90%;
+    }
+    
+    .chatPage .wrapper .chat .message.ai .ai-sentence {
+        padding: 3px 0;
+        font-size: 0.9rem;
+    }
 }
