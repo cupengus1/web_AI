@@ -25,7 +25,7 @@ const ChatList = () => {
   const handleLogout = () => {
     localStorage.removeItem('token')
     localStorage.removeItem('chatHistory')
-    navigate('/signin')
+    navigate('/')
   }
 
   return (
