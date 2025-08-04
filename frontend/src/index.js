@@ -23,7 +23,7 @@ function App() {
         {/* Dashboard layout with nested routes */}
         <Route path="/dashboard" element={<DashboardLayout />}>
           <Route index element={<DashboardPage />} />
-          <Route path="chats/:chatId" element={<DashboardPage  />} />
+          <Route path="chats/:chatId" element={<ChatPage  />} />
         </Route>
 
 {/* Admin routes */}

@@ -70,8 +70,11 @@ const ChatPage = () => {
             </div>
           )}
           <div ref={chatEndRef}></div>
-          <NewPrompt onSendMessage={handleSendMessage} isLoading={isLoading} />
+          
         </div>
+      </div>
+      <div className="formContainer">
+        <NewPrompt onSendMessage={handleSendMessage} isLoading={isLoading} />
       </div>
     </div>
   )

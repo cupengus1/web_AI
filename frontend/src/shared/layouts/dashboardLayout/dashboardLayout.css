@@ -14,7 +14,7 @@
 .dashboardLayout .main-content {
   flex: 1;
   overflow-y: auto;
-  background-color: #1a1a1a;
+ background: linear-gradient(135deg, #e0eafc, #cfdef3);
 }
 
 /* Responsive design */

@@ -83,7 +83,23 @@ const DashboardPage = () => {
           <img src="/vlute.png" alt="" />
           <h1>WEB AI</h1>
         </div>
-      </div>
+      
+
+        <div className="options">
+            <div className="option" onClick={() => navigate('/dashboard')}>
+                <span>📝 Create a new chat</span>
+            </div>
+            <div className="option" onClick={() => navigate('/dashboard/code')}>
+                <span>💻 Create a new code</span>
+            </div>
+            <div className="option" onClick={() => navigate('/explore')}>
+                <span>🌐 Explore WEB AI</span>
+            </div>
+            <div className="option" onClick={() => navigate('/contact')}>
+                <span>📩 Contact</span>
+            </div>
+        </div>
+        </div>
 
       <div className='chat-container'>
         {messages.map((msg, index) => (
