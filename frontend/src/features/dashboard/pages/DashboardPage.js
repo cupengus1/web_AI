@@ -1,65 +1,107 @@
 import './DashboardPage.css'
-import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useEffect, useState, useCallback, useRef } from 'react'
+import { useNavigate, useParams, useLocation } from 'react-router-dom'
+import NewPrompt from '../../../shared/components/newPrompt/NewPrompt'
+import { publicChat } from '../../../shared/api/api'
 
 const DashboardPage = () => {
-    const [question, setQuestion] = useState('')
-    const navigate = useNavigate()
+  const { chatId } = useParams()
+  const location = useLocation()
+  const navigate = useNavigate()
+  const [messages, setMessages] = useState([])
+  const [isLoading, setIsLoading] = useState(false)
+  const hasInitialized = useRef(false)
 
-    const handleSubmit = (e) => {
-        e.preventDefault()
-        if (!question.trim()) return
-
-        // tạo chatId duy nhất
-        const chatId = crypto.randomUUID()
-
-        // lưu chat rỗng ban đầu
-        const chatHistory = JSON.parse(localStorage.getItem('chatHistory') || '[]')
-        chatHistory.unshift({ id: chatId, title: question, date: new Date().toLocaleString(), messages: [] })
-        localStorage.setItem('chatHistory', JSON.stringify(chatHistory))
-
-        // điều hướng tới trang chat
-        navigate(`/dashboard/chat/${chatId}`, { state: { initialQuestion: question } })
-
+  useEffect(() => {
+    if (chatId) {
+      const chatHistory = JSON.parse(localStorage.getItem('chatHistory') || '[]')
+      const chat = chatHistory.find(c => c.id === chatId)
+      if (chat) {
+        setMessages(chat.messages)
+      }
     }
-    const handleOptionClick = (optionText) => {
-        setQuestion(optionText)
+  }, [chatId])
+
+  const saveChatHistory = (title, msgs) => {
+    const chatHistory = JSON.parse(localStorage.getItem('chatHistory') || '[]')
+    const newChat = {
+      id: chatId,
+      title,
+      date: new Date().toLocaleDateString() + ' ' + new Date().toLocaleTimeString(),
+      messages: msgs
+    }
+    const idx = chatHistory.findIndex(c => c.id === chatId)
+    if (idx >= 0) chatHistory[idx] = newChat
+    else chatHistory.unshift(newChat)
+    localStorage.setItem('chatHistory', JSON.stringify(chatHistory))
+  }
+
+  const handleSendMessage = useCallback(async (question) => {
+    if (!question.trim()) return
+
+    if (!chatId) {
+      const newChatId = `chat_${Date.now()}`
+      navigate(`/dashboard/chats/${newChatId}`, { state: { initialQuestion: question } })
+      return
     }
 
-    return (
-        <div className='dashboardPage'>
-            <div className='texts'>
-                <div className='logo'>
-                    <img src="vlute.png" alt =""/>
-                    <h1>WEB AI</h1>
-                </div>
-                <div className='options'>
-                <div className='option' onClick={() => handleOptionClick('Tạo một cuộc trò chuyện mới')}>
-                    <span>Create a New Chat</span>
-                </div>
-                 <div className='option' onClick={() => handleOptionClick('Phân tích hình ảnh')}>
-                    <span>Analyze Images</span>
-                 </div>
-                <div className='option' onClick={() => handleOptionClick('Giúp tôi với code của tôi')}>
-                    <span>Help me with My code</span>
-                </div>
-                </div>
-            </div>
-            <div className='formContainer'>
-                <form onSubmit={handleSubmit}>
-                    <input 
-                        type='text' 
-                        placeholder='Ask me anything...' 
-                        value={question}
-                        onChange={(e) => setQuestion(e.target.value)}
-                    />
-                    <button type="submit">
-                        <img src="arrow.png" alt=""/>
-                    </button>
-                </form>
-            </div>
+    const userMessage = { type: 'user', content: question }
+    const updatedMessages = [...messages, userMessage]
+    setMessages(updatedMessages)
+    setIsLoading(true)
+
+    try {
+      const response = await publicChat(question)
+      const aiMessage = { type: 'ai', content: response.data.answer }
+      const finalMessages = [...updatedMessages, aiMessage]
+      setMessages(finalMessages)
+
+      saveChatHistory(
+        messages[0]?.content || question.substring(0, 30),
+        finalMessages
+      )
+    } catch (error) {
+      const errorMessage = { type: 'error', content: 'Có lỗi xảy ra, thử lại.' }
+      setMessages(prev => [...prev, errorMessage])
+    } finally {
+      setIsLoading(false)
+    }
+  }, [messages, chatId, navigate])
+
+  useEffect(() => {
+    const initialQuestion = location.state?.initialQuestion
+    if (initialQuestion && !hasInitialized.current && chatId) {
+      hasInitialized.current = true
+      handleSendMessage(initialQuestion)
+    }
+  }, [location.state, chatId, handleSendMessage])
+
+  return (
+    <div className='dashboardPage'>
+      <div className='texts'>
+        <div className='logo'>
+          <img src="/vlute.png" alt="" />
+          <h1>WEB AI</h1>
         </div>
-    )
+      </div>
+
+      <div className='chat-container'>
+        {messages.map((msg, index) => (
+          <div key={index} className={`message ${msg.type}`}>
+            {msg.content}
+          </div>
+        ))}
+        {isLoading && <div className="message ai">AI đang suy nghĩ...</div>}
+      </div>
+
+      <div className='formContainer'>
+        <NewPrompt 
+          onSendMessage={handleSendMessage} 
+          isLoading={isLoading} 
+        />
+      </div>
+    </div>
+  )
 }
 
 export default DashboardPage

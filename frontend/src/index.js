@@ -23,10 +23,10 @@ function App() {
         {/* Dashboard layout with nested routes */}
         <Route path="/dashboard" element={<DashboardLayout />}>
           <Route index element={<DashboardPage />} />
-          <Route path="chat/:chatId" element={<ChatPage />} />
+          <Route path="chats/:chatId" element={<DashboardPage  />} />
         </Route>
 
-        {/* Admin routes */}
+{/* Admin routes */}
         <Route path="/admin" element={<AdminDashboard />} />
       </Routes>
     </Router>

@@ -3,110 +3,94 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    position: relative;
     background: linear-gradient(135deg, #e0eafc, #cfdef3);
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    padding: 20px;
 }
 
 .chatPage .wrapper {
     flex: 1;
-    overflow: scroll;
     width: 100%;
-    display: flex;
-    justify-content: center;
-}
-
-.chatPage .wrapper .chat{
-    width: 50%;
+    max-width: 800px;
     display: flex;
     flex-direction: column;
-}
-
-.chatPage .wrapper .chat .message{
+    overflow-y: auto;
     padding: 20px;
-    color: #f1f1f1; /* chữ sáng */
-    margin: 10px 0;
-    font-family: inherit;
+    box-sizing: border-box;
 }
 
-.chatPage .wrapper .chat .message.user{
-    background-color: #f1f1f1;
-    color: #000000;
-    border-radius: 20px;
-    max-width: 80%;
-    align-self: flex-end;
-    border: 1px solid #ddd; /* viền nhẹ */
-}
-
-.chatPage .wrapper .chat .message.ai{
-    background-color: #ffffff;
-    color: #000000;
-    border-radius: 20px;
-    max-width: 80%;
-    align-self: flex-start;
-    border-left: 4px solid #4f46e5;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.1); /* đổ bóng nhẹ */
-}
-
-.chatPage .wrapper .chat .message.error{
-    background-color: #dc2626;
-    color: #ffffff;
-    border-radius: 20px;
-    max-width: 80%;
-    align-self: center;
-    text-align: center;
-    font-weight: 500;
-}
-
-/* AI Message Content Styles */
-.chatPage .wrapper .chat .message.ai .ai-message-content {
+.chatPage .chat {
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 15px;
 }
 
-.chatPage .wrapper .chat .message.ai .ai-sentence {
+/* Tin nhắn user */
+.chatPage .chat .message.user {
+    align-self: flex-end;
+    background-color: #2563eb;
+    color: white;
+    padding: 12px 18px;
+    border-radius: 20px 20px 0 20px;
+    max-width: 75%;
+    line-height: 1.5;
+    font-size: 1rem;
+}
+
+/* Tin nhắn AI */
+.chatPage .chat .message.ai {
+    align-self: flex-start;
+    background-color: #ffffff;
+    color: #111827;
+    padding: 12px 18px;
+    border-radius: 20px 20px 20px 0;
+    max-width: 75%;
     line-height: 1.6;
-    padding: 4px 0;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    font-family: inherit;
+    font-size: 1rem;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
 }
 
-.chatPage .wrapper .chat .message.ai .ai-sentence:last-child {
-    border-bottom: none;
-}
-
-.chatPage .wrapper .chat .message.ai .ai-sentence strong {
-    color: #4f46e5;
-    font-weight: 600;
-}
-
-/* Loading animation for AI message */
-.chatPage .wrapper .chat .message.ai.loading {
-    background-color: #374151;
-    color: #9ca3af;
+/* Loading */
+.chatPage .chat .message.ai.loading {
+    background-color: #f3f4f6;
+    color: #6b7280;
     font-style: italic;
 }
 
-/* Responsive design */
-@media (max-width: 768px) {
-    .chatPage .wrapper .chat {
-        width: 90%;
-    }
-    
-    .chatPage .wrapper .chat .message {
-        padding: 15px;
-        margin: 8px 0;
-    }
-    
-    .chatPage .wrapper .chat .message.user,
-    .chatPage .wrapper .chat .message.ai,
-    .chatPage .wrapper .chat .message.error {
-        max-width: 90%;
-    }
-    
-    .chatPage .wrapper .chat .message.ai .ai-sentence {
-        padding: 3px 0;
-        font-size: 0.9rem;
-    }
+/* Ô nhập câu hỏi */
+.newPrompt {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    max-width: 800px;
+    margin-top: 15px;
+    background: white;
+    border-radius: 30px;
+    padding: 8px 15px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+.newPrompt input {
+    flex: 1;
+    border: none;
+    outline: none;
+    font-size: 1rem;
+    padding: 10px;
+    border-radius: 20px;
+}
+
+.newPrompt button {
+    background: #2563eb;
+    border: none;
+    color: white;
+    padding: 10px 14px;
+    border-radius: 50%;
+    margin-left: 10px;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.newPrompt button:hover {
+    background: #1e40af;
 }

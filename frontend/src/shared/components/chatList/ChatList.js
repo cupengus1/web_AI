@@ -14,13 +14,14 @@ const ChatList = () => {
     }
   }, [])
 
-  const handleNewChat = () => {
-    navigate('/dashboard')
-  }
+    const handleNewChat = () => {
+        const newChatId = `chat_${Date.now()}`
+        navigate(`/dashboard/chats/${newChatId}`)
+    }
 
-  const handleChatClick = (chatId) => {
-  navigate(`/dashboard/chat/${chatId}`);
-}
+    const handleChatClick = (chatId) => {
+        navigate(`/dashboard/chats/${chatId}`)
+    }
 
   const handleLogout = () => {
     localStorage.removeItem('token')
