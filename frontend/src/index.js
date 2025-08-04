@@ -3,7 +3,6 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
-// Import components from feature-based structure
 import DashboardPage from './features/dashboard/pages/DashboardPage';
 import Homepage from './features/homepage/pages/Homepage';
 import SignUpPage from './features/auth/pages/SignUpPage';
@@ -16,20 +15,18 @@ function App() {
   return (
     <Router>
       <Routes>
+        {/* Public routes */}
         <Route path="/" element={<Homepage />} />
         <Route path="/signin" element={<SignInPage />} />
         <Route path="/signup" element={<SignUpPage />} />
-        
-        {/* Dashboard Layout Routes */}
+
+        {/* Dashboard layout with nested routes */}
         <Route path="/dashboard" element={<DashboardLayout />}>
           <Route index element={<DashboardPage />} />
+          <Route path="chat/:chatId" element={<ChatPage />} />
         </Route>
-        
-        <Route path="/chat" element={<DashboardLayout />}>
-          <Route index element={<ChatPage />} />
-        </Route>
-        
-        {/* Admin Routes */}
+
+        {/* Admin routes */}
         <Route path="/admin" element={<AdminDashboard />} />
       </Routes>
     </Router>

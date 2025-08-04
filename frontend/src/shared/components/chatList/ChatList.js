@@ -19,8 +19,8 @@ const ChatList = () => {
   }
 
   const handleChatClick = (chatId) => {
-    navigate(`/chat/${chatId}`)
-  }
+  navigate(`/dashboard/chat/${chatId}`);
+}
 
   const handleLogout = () => {
     localStorage.removeItem('token')

@@ -19,13 +19,13 @@
 
 .newForm input{
    flex: 1;
-   padding: 20px;
-   border: none;
-   outline: none;
-   background-color: transparent;
-   color: white;
-   font-family: inherit;
-   font-size: 14px;
+  border: none;
+  outline: none;
+  padding: 1rem 1.5rem;
+  font-size: 1rem;
+  background: transparent;
+  color: #374151;
+  font-family: inherit;
 }
 
 .newForm input::placeholder {

@@ -7,7 +7,7 @@ const NewPrompt = ({ onSendMessage, isLoading = false }) => {
     
     useEffect(() => {
         endRef.current?.scrollIntoView({ behavior: "smooth"});
-    }, []);
+    }, [message, isLoading]);
 
     const handleSubmit = (e) => {
         e.preventDefault();
