@@ -36,13 +36,12 @@ const ChatList = () => {
             <span className='title'>WEB AI</span>
         </div>
         
+
         <div className='section'>
             <span className='section-title'>DASHBOARD</span>
             <button className='new-chat-btn' onClick={handleNewChat}>
                 Create a new chat
             </button>
-            <Link to="/" className='nav-link'>Explore WEB AI</Link>
-            <Link to="/" className='nav-link'>Contact</Link>
         </div>
         
         <hr/>
@@ -72,14 +71,7 @@ const ChatList = () => {
         
         <hr/>
         <div style={{ marginTop: 'auto', width: '100%' }}>
-        <div className='upgrade'>
-            <img src="/vlute.png" alt="" className='logo-chatList'/>
-            <div className='texts'>
-                <span>Upgrade to Web AI Pro</span>
-                <span>Get unlimited access to all features</span>
-            </div>
-        </div>
-        
+       
         <div className='footer'>
             <button className='logout-btn' onClick={handleLogout}>
                 Logout
