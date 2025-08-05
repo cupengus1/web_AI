@@ -10,6 +10,7 @@ import SignInPage from './features/auth/pages/SignInPage';
 import ChatPage from './features/chat/pages/ChatPage';
 import DashboardLayout from './shared/layouts/dashboardLayout/DashboardLayout';
 import AdminDashboard from './features/admin/pages/AdminDashboard';
+import ForgotPasswordPage from './features/auth/pages/ForgotPassPage';
 
 function App() {
   return (
@@ -19,7 +20,7 @@ function App() {
         <Route path="/" element={<Homepage />} />
         <Route path="/signin" element={<SignInPage />} />
         <Route path="/signup" element={<SignUpPage />} />
-
+        <Route path="/forgot-password" element={<ForgotPasswordPage />} />
         {/* Dashboard layout with nested routes */}
         <Route path="/dashboard" element={<DashboardLayout />}>
           <Route index element={<DashboardPage />} />

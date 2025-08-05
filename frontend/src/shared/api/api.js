@@ -30,6 +30,9 @@ api.interceptors.request.use((config) => {
 export const register = (email, password) => api.post("/api/auth/register", { email, password });
 export const login = (email, password) => api.post("/api/auth/login", { email, password });
 export const logout = () => api.post("/api/auth/logout");
+export const forgotPassword = (email) => {
+    return axios.post('http://localhost:5000/api/auth/forgot-password', { email });
+};
 
 // =============================================
 // PROCEDURES APIs (Quy trình nội bộ)
