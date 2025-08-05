@@ -3,7 +3,7 @@ import { useEffect, useState, useCallback, useRef } from 'react'
 import { useNavigate, useParams, useLocation } from 'react-router-dom'
 import NewPrompt from '../../../shared/components/newPrompt/NewPrompt'
 import { publicChat } from '../../../shared/api/api'
-
+import '../../../index.css'
 const DashboardPage = () => {
   const { chatId } = useParams()
   const location = useLocation()
@@ -22,7 +22,7 @@ const DashboardPage = () => {
     }
   }, [chatId])
 
-  const saveChatHistory = (title, msgs) => {
+  const saveChatHistory = useCallback((title, msgs) => {
     const chatHistory = JSON.parse(localStorage.getItem('chatHistory') || '[]')
     const newChat = {
       id: chatId,
@@ -34,7 +34,7 @@ const DashboardPage = () => {
     if (idx >= 0) chatHistory[idx] = newChat
     else chatHistory.unshift(newChat)
     localStorage.setItem('chatHistory', JSON.stringify(chatHistory))
-  }
+  }, [chatId])
 
   const handleSendMessage = useCallback(async (question) => {
     if (!question.trim()) return
@@ -57,8 +57,8 @@ const DashboardPage = () => {
       setMessages(finalMessages)
 
       saveChatHistory(
-        messages[0]?.content || question.substring(0, 30),
-        finalMessages
+       updatedMessages[0]?.content || question.substring(0, 30),
+       finalMessages
       )
     } catch (error) {
       const errorMessage = { type: 'error', content: 'Có lỗi xảy ra, thử lại.' }
@@ -66,7 +66,7 @@ const DashboardPage = () => {
     } finally {
       setIsLoading(false)
     }
-  }, [messages, chatId, navigate])
+  }, [messages, chatId, navigate, saveChatHistory])
 
   useEffect(() => {
     const initialQuestion = location.state?.initialQuestion

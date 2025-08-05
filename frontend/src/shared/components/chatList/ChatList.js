@@ -1,7 +1,7 @@
 import './chatList.css'
 import { Link, useNavigate } from "react-router-dom"
 import { useState, useEffect } from 'react'
-
+import '../../../index.css'
 const ChatList = () => {
   const navigate = useNavigate()
   const [chatHistory, setChatHistory] = useState([])
@@ -71,7 +71,7 @@ const ChatList = () => {
         </div>
         
         <hr/>
-        
+        <div style={{ marginTop: 'auto', width: '100%' }}>
         <div className='upgrade'>
             <img src="/vlute.png" alt="" className='logo-chatList'/>
             <div className='texts'>
@@ -85,6 +85,7 @@ const ChatList = () => {
                 Logout
             </button>
         </div>
+    </div>
     </div>
   )
 }

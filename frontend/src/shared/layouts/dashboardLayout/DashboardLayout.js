@@ -2,7 +2,7 @@ import React, { useEffect } from 'react'
 import './dashboardLayout.css'
 import { Outlet, useNavigate } from 'react-router-dom'
 import ChatList from '../../components/chatList/ChatList'
-
+import '../../../index.css'
 const DashboardLayout = () => {
   const navigate = useNavigate()
   

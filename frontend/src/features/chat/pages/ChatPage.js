@@ -1,14 +1,16 @@
 import { useEffect, useState, useCallback, useRef } from 'react'
-import { useParams } from 'react-router-dom'
+import { useLocation, useParams } from 'react-router-dom'
 import NewPrompt from '../../../shared/components/newPrompt/NewPrompt';
 import { publicChat } from '../../../shared/api/api'
 import './ChatPage.css'
-
+import '../../../index.css'
 const ChatPage = () => {
   const { chatId } = useParams();
+  const location = useLocation(); // Thêm dòng này
   const [messages, setMessages] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const chatEndRef = useRef(null);
+  const hasInitialized = useRef(false); // Thêm dòng này
 
   // Scroll xuống cuối khi có tin nhắn mới
   useEffect(() => {
@@ -23,6 +25,15 @@ const ChatPage = () => {
       setMessages(selectedChat.messages || []);
     }
   }, [chatId]);
+// Xử lý initialQuestion khi vừa chuyển sang trang chat
+  useEffect(() => {
+    const initialQuestion = location.state?.initialQuestion;
+    if (initialQuestion && !hasInitialized.current) {
+      hasInitialized.current = true;
+      handleSendMessage(initialQuestion);
+    }
+  // eslint-disable-next-line
+  }, [location.state, chatId]); // Bỏ handleSendMessage khỏi deps để tránh lặp vô hạn
 
   const handleSendMessage = useCallback(async (question) => {
     if (!question.trim()) return;
@@ -37,13 +48,21 @@ const ChatPage = () => {
       setMessages(prev => [...prev, aiMessage]);
 
       // Cập nhật lịch sử chat
-      const chatHistory = JSON.parse(localStorage.getItem('chatHistory') || '[]');
-      const updatedHistory = chatHistory.map(chat =>
-        chat.id === chatId
-          ? { ...chat, messages: [...(chat.messages || []), userMessage, aiMessage] }
-          : chat
-      );
-      localStorage.setItem('chatHistory', JSON.stringify(updatedHistory));
+  const chatHistory = JSON.parse(localStorage.getItem('chatHistory') || '[]');
+  const chatIdx = chatHistory.findIndex(chat => chat.id === chatId);
+  const newMessages = [...(chatHistory[chatIdx]?.messages || messages), userMessage, aiMessage];
+  const newChat = {
+      id: chatId,
+      title: messages[0]?.content || question.substring(0, 30),
+      date: new Date().toLocaleDateString() + ' ' + new Date().toLocaleTimeString(),
+      messages: newMessages
+      };
+      if (chatIdx >= 0) {
+        chatHistory[chatIdx] = newChat;
+      } else {
+        chatHistory.unshift(newChat);
+      }
+      localStorage.setItem('chatHistory', JSON.stringify(chatHistory));
     } catch (error) {
       console.error('❌ API Error:', error);
       const errorMessage = { type: 'error', content: 'Có lỗi xảy ra khi gọi AI. Vui lòng thử lại.' };

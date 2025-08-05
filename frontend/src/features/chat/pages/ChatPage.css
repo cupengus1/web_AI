@@ -4,8 +4,8 @@
     justify-content: center;
     align-items: center;
     flex-direction: column;
-    background: linear-gradient(135deg, #e0eafc, #cfdef3);
-    font-family: 'Segoe UI', Roboto, sans-serif;
+    background: transparent; /* Đã dùng nền chung ở body */
+    font-family: inherit;
 }
 
 .wrapper {
