@@ -19,7 +19,7 @@ const Homepage = () => {
                 <div className='bgContainer'>
                     <div className='bg'></div>
                 </div>
-                <img src="/bot3.png" alt="" className="bot" />
+                <img src="/bot4.png" alt="" className="bot" />
             </div>
         </div>
     </div>
