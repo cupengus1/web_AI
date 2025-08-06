@@ -2,7 +2,9 @@
 package handlers
 
 import (
+	"fmt"
 	"net/http"
+	"os"
 	"web_AI/services"
 	"web_AI/utils"
 
@@ -11,6 +13,7 @@ import (
 
 func Register(c *gin.Context) {
 	var req struct {
+		Name     string `json:"name"`
 		Email    string `json:"email"`
 		Password string `json:"password"`
 	}
@@ -19,11 +22,18 @@ func Register(c *gin.Context) {
 		return
 	}
 
-	user, err := services.RegisterUser(req.Email, req.Password)
+	// DEBUG: Log received data
+	fmt.Printf("📝 REGISTER DEBUG - Received: Name='%s', Email='%s', Password='%s'\n",
+		req.Name, req.Email, req.Password)
+
+	user, err := services.RegisterUser(req.Name, req.Email, req.Password)
 	if err != nil {
 		c.JSON(http.StatusConflict, gin.H{"error": err.Error()})
 		return
 	}
+
+	// DEBUG: Log created user
+	fmt.Printf("✅ USER CREATED - Name='%s', Email='%s'\n", user.Name, user.Email)
 
 	token, _ := utils.GenerateJWT(user.ID.Hex())
 	c.JSON(http.StatusOK, gin.H{"user": user, "token": token})
@@ -48,7 +58,7 @@ func Login(c *gin.Context) {
 	token, _ := utils.GenerateJWT(user.ID.Hex())
 	c.JSON(http.StatusOK, gin.H{"user": user, "token": token})
 }
-//Sử dụng cho admin
+
 func AdminLogin(c *gin.Context) {
 	var req struct {
 		Email    string `json:"email"`
@@ -59,8 +69,17 @@ func AdminLogin(c *gin.Context) {
 		return
 	}
 
-	// Kiểm tra admin credentials (hardcoded cho demo)
-	if req.Email == "admin@example.com" && req.Password == "123456" {
+	adminEmail := os.Getenv("ADMIN_EMAIL")
+	adminPassword := os.Getenv("ADMIN_PASSWORD")
+
+	if adminEmail == "" {
+		adminEmail = "admin@example.com"
+	}
+	if adminPassword == "" {
+		adminPassword = "admin123"
+	}
+
+	if req.Email == adminEmail && req.Password == adminPassword {
 		token, _ := utils.GenerateJWT("admin")
 		c.JSON(http.StatusOK, gin.H{"user": gin.H{"email": req.Email, "role": "admin"}, "token": token})
 		return

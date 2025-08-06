@@ -315,6 +315,215 @@
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
+/* Loading and Empty States */
+.loading-state, .empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  text-align: center;
+  background: #f8f9fa;
+  border-radius: 8px;
+  margin: 1rem 0;
+}
+
+.loading-spinner {
+  font-size: 2rem;
+  animation: spin 1s linear infinite;
+}
+
+.empty-icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  opacity: 0.6;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Procedures Management */
+.procedures-management {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.procedures-form-section {
+  background: #f8f9fa;
+  padding: 1.5rem;
+  border-radius: 8px;
+  border: 1px solid #e9ecef;
+}
+
+.procedures-form-section h3 {
+  margin: 0 0 1rem 0;
+  color: #495057;
+}
+
+.procedures-list-section {
+  margin-top: 1rem;
+}
+
+/* Procedures List */
+.procedures-list {
+  margin-top: 1rem;
+}
+
+.procedures-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid #e9ecef;
+}
+
+.procedures-header h3 {
+  margin: 0;
+  color: #495057;
+}
+
+.procedures-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 1.5rem;
+  margin-top: 1rem;
+}
+
+.procedure-card {
+  background: white;
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.procedure-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.procedure-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1rem;
+  gap: 1rem;
+}
+
+.procedure-title {
+  margin: 0;
+  color: #495057;
+  font-size: 1.1rem;
+  font-weight: 600;
+  line-height: 1.3;
+  flex: 1;
+}
+
+.procedure-category {
+  background: #e3f2fd;
+  color: #1976d2;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.procedure-content {
+  margin-bottom: 1rem;
+}
+
+.procedure-description {
+  margin: 0 0 0.5rem 0;
+  color: #6c757d;
+  font-style: italic;
+  font-size: 0.9rem;
+}
+
+.procedure-preview {
+  margin-top: 0.5rem;
+}
+
+.procedure-preview strong {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: #495057;
+  font-size: 0.9rem;
+}
+
+.content-preview {
+  margin: 0;
+  color: #6c757d;
+  font-size: 0.85rem;
+  line-height: 1.4;
+  background: #f8f9fa;
+  padding: 0.5rem;
+  border-radius: 4px;
+  border-left: 3px solid #007bff;
+}
+
+.procedure-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  margin-bottom: 1rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid #e9ecef;
+}
+
+.created-date, .updated-date {
+  color: #6c757d;
+  font-size: 0.8rem;
+}
+
+.procedure-actions {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: flex-end;
+}
+
+.btn-edit, .btn-delete {
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-weight: 500;
+}
+
+.btn-edit {
+  background: #28a745;
+  color: white;
+}
+
+.btn-edit:hover:not(:disabled) {
+  background: #218838;
+  transform: translateY(-1px);
+}
+
+.btn-delete {
+  background: #dc3545;
+  color: white;
+}
+
+.btn-delete:hover:not(:disabled) {
+  background: #c82333;
+  transform: translateY(-1px);
+}
+
+.btn-edit:disabled, .btn-delete:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
   .admin-header {
@@ -351,6 +560,29 @@
   
   .form-actions button {
     width: 100%;
+  }
+
+  .procedures-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  
+  .procedure-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+  
+  .procedure-category {
+    align-self: flex-start;
+  }
+  
+  .procedure-actions {
+    justify-content: stretch;
+  }
+  
+  .btn-edit, .btn-delete {
+    flex: 1;
   }
 }
 

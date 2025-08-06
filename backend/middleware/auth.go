@@ -1,6 +1,7 @@
 package middleware
 
 import (
+	"fmt"
 	"net/http"
 	"strings"
 	"web_AI/utils"
@@ -27,22 +28,32 @@ func JWTAuth() gin.HandlerFunc {
 		}
 
 		token := tokenParts[1]
+		fmt.Printf("🔍 MIDDLEWARE DEBUG - Token received: %s\n", token[:20]+"...")
+
 		userID, err := utils.ValidateJWT(token)
 		if err != nil {
+			fmt.Printf("🔍 MIDDLEWARE DEBUG - JWT validation failed: %v\n", err)
 			c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid token"})
 			c.Abort()
 			return
 		}
 
-		// Convert string to ObjectID
-		objID, err := primitive.ObjectIDFromHex(userID)
-		if err != nil {
-			c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid user ID"})
-			c.Abort()
-			return
-		}
+		fmt.Printf("🔍 MIDDLEWARE DEBUG - JWT validation success, userID: %s\n", userID)
 
-		c.Set("user_id", objID)
+		// Convert string to ObjectID hoặc handle admin special case
+		if userID == "admin" {
+			// Special case cho admin
+			c.Set("user_id", userID)
+			c.Set("is_admin", true)
+		} else {
+			objID, err := primitive.ObjectIDFromHex(userID)
+			if err != nil {
+				c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid user ID"})
+				c.Abort()
+				return
+			}
+			c.Set("user_id", objID)
+		}
 		c.Next()
 	}
 }

@@ -10,7 +10,7 @@ const Homepage = () => {
             <h2>Phát triển kỹ năng bản thân</h2>
             <h3>Hello word</h3>
             <div className='homepage-buttons'>
-                <Link to="/dashboard" className='get-started-btn'>Get Started</Link>
+                <Link to="/chat" className='get-started-btn'>Trò chuyện AI</Link>
                 <Link to="/signin" className='login-btn'>Đăng nhập</Link>
             </div>
         </div>

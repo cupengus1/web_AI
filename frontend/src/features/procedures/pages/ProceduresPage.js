@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { getProcedures, getCategories, searchProcedures } from '../../../api/api';
+import { getProcedures, getCategories, searchProcedures } from '../../../shared/api/api';
 import './ProceduresPage.css';
 
 const ProceduresPage = () => {

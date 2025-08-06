@@ -12,11 +12,19 @@ func SetupRoutes(router *gin.Engine) {
 	// Auth routes
 	router.POST("/api/auth/register", handlers.Register)
 	router.POST("/api/auth/login", handlers.Login)
-	
+
 	// Admin routes
 	router.POST("/api/admin/login", handlers.AdminLogin)
 
-	// Protected routes
+	// Public routes (no authentication required)
+	router.GET("/api/procedures", handlers.GetProcedures)
+	router.GET("/api/procedures/:id", handlers.GetProcedureById)
+	router.GET("/api/procedures/search", handlers.SearchProcedures)
+	router.GET("/api/procedures/category/:category", handlers.GetProceduresByCategory)
+	router.GET("/api/categories", handlers.GetCategories)
+	router.POST("/api/chat/public", handlers.HandleAIChat)
+
+	// Protected routes (require authentication)
 	authGroup := router.Group("/api")
 	authGroup.Use(middleware.JWTAuth())
 	{
@@ -24,6 +32,20 @@ func SetupRoutes(router *gin.Engine) {
 		authGroup.GET("/history", handlers.GetHistory)
 	}
 
-	// Public chat route (không cần đăng nhập)
-	router.POST("/api/chat/public", handlers.HandleAIChat)
+	// Admin protected routes
+	adminGroup := router.Group("/api/admin")
+	adminGroup.Use(middleware.JWTAuth())
+	{
+		// Procedure management
+		adminGroup.POST("/procedures", handlers.CreateProcedure)
+		adminGroup.PUT("/procedures/:id", handlers.UpdateProcedure)
+		adminGroup.DELETE("/procedures/:id", handlers.DeleteProcedure)
+		adminGroup.POST("/procedures/upload", handlers.UploadProcedureFile)
+
+		// Category management
+		adminGroup.POST("/categories", handlers.CreateCategory)
+
+		// Statistics
+		adminGroup.GET("/stats", handlers.GetAdminStats)
+	}
 }

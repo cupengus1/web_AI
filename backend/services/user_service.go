@@ -12,7 +12,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
-func RegisterUser(email, password string) (*models.User, error) {
+func RegisterUser(name, email, password string) (*models.User, error) {
 	userCol := config.DB.Collection("users")
 
 	// Kiểm tra email đã tồn tại chưa
@@ -25,6 +25,7 @@ func RegisterUser(email, password string) (*models.User, error) {
 	hashed, _ := utils.HashPassword(password)
 	user := models.User{
 		ID:       primitive.NewObjectID(),
+		Name:     name,
 		Email:    email,
 		Password: hashed,
 	}

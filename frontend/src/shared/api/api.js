@@ -27,7 +27,7 @@ api.interceptors.request.use((config) => {
 // =============================================
 // AUTHENTICATION APIs
 // =============================================
-export const register = (email, password) => api.post("/api/auth/register", { email, password });
+export const register = (name, email, password) => api.post("/api/auth/register", { name, email, password });
 export const login = (email, password) => api.post("/api/auth/login", { email, password });
 export const logout = () => api.post("/api/auth/logout");
 export const forgotPassword = (email) => {
@@ -55,9 +55,7 @@ export const chatWithProcedureContext = (question, procedureIds) =>
   api.post("/api/ai/chat-with-context", { question, procedure_ids: procedureIds });
 
 // Function tương thích với DashboardPage (giao diện cũ)
-export const chatWithAI = (message) => api.post("/api/ai/ask", { question: message });
-
-// =============================================
+export const chatWithAI = (message) => api.post("/api/chat/public", { question: message });// =============================================
 // CONVERSATIONS APIs
 // =============================================
 export const createConversation = (title = "Cuộc trò chuyện mới") => 

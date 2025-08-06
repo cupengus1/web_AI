@@ -41,3 +41,8 @@ func InitMongoDB() {
 	DB = client.Database(dbName)
 	log.Println("✅ Connected to MongoDB!")
 }
+
+// GetCollection returns a collection from the database
+func GetCollection(collectionName string) *mongo.Collection {
+	return DB.Collection(collectionName)
+}
