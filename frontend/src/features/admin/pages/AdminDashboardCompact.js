@@ -133,19 +133,19 @@ const AdminDashboard = () => {
   return (
     <div className="admin-dashboard">
       <header className="admin-header">
-        <h1>⚙️ Admin Panel</h1>
+        <h1>Admin Panel kd.AI</h1>
         <div style={{ display: 'flex', gap: '10px' }}>
-          <button onClick={() => navigate('/dashboard')} className="back-dashboard-btn">⬅️ Quay về Dashboard</button>
+          <button onClick={() => navigate('/dashboard')} className="logout-btn">Dashboard</button>
           <button onClick={handleLogout} className="logout-btn">Đăng xuất</button>
         </div>
       </header>
 
       <nav className="admin-nav">
         {[
-          { key: 'dashboard', label: '📊 Dashboard' },
-          { key: 'procedures', label: '📝 Quy trình' },
-          { key: 'upload', label: '📁 Upload' },
-          { key: 'categories', label: '🏷️ Danh mục' }
+          { key: 'dashboard', label: 'Dashboard' },
+          { key: 'procedures', label: ' Quy trình' },
+          { key: 'upload', label: ' Upload' },
+          { key: 'categories', label: ' Danh mục' }
         ].map(tab => (
           <button 
             key={tab.key}
@@ -168,22 +168,19 @@ const AdminDashboard = () => {
         {/* Dashboard */}
         {activeTab === 'dashboard' && (
           <div className="dashboard-stats">
-            <h2>📊 Thống kê hệ thống</h2>
+            <h2>Thống kê hệ thống</h2>
             <div className="stats-grid">
               <StatsCard 
-                icon="📄" 
                 title="Quy trình" 
                 value={stats.totalProcedures} 
                 isLoading={isLoading} 
               />
               <StatsCard 
-                icon="🏷️" 
                 title="Danh mục" 
                 value={stats.totalCategories} 
                 isLoading={isLoading} 
               />
               <StatsCard 
-                icon="👥" 
                 title="Truy cập" 
                 value={stats.totalVisits} 
                 isLoading={isLoading} 
@@ -195,11 +192,11 @@ const AdminDashboard = () => {
         {/* Procedures */}
         {activeTab === 'procedures' && (
           <div className="procedures-management">
-            <h2>📝 Quản lý quy trình</h2>
+            <h2>Quản lý quy trình</h2>
             
             {/* Procedure Form */}
             <div className="procedures-form-section">
-              <h3>{isEditing ? '✏️ Sửa quy trình' : '➕ Tạo quy trình mới'}</h3>
+              <h3>{isEditing ? ' Sửa quy trình' : ' Tạo quy trình mới'}</h3>
               <ProcedureForm
                 formData={procedureForm}
                 onFieldChange={handleFormFieldChange}
@@ -227,7 +224,7 @@ const AdminDashboard = () => {
         {/* Upload */}
         {activeTab === 'upload' && (
           <div className="file-upload">
-            <h2>📁 Upload file quy trình</h2>
+            <h2>Upload file quy trình</h2>
             <form onSubmit={handleFileUpload} className="upload-form">
               <FormField
                 label="Tiêu đề"
@@ -276,7 +273,7 @@ const AdminDashboard = () => {
         {/* Categories */}
         {activeTab === 'categories' && (
           <div className="categories-management">
-            <h2>🏷️ Quản lý danh mục</h2>
+            <h2>Quản lý danh mục</h2>
             <form onSubmit={handleCategorySubmit} className="category-form">
               <div className="form-row">
                 <FormField
@@ -322,7 +319,7 @@ const AdminDashboard = () => {
                 </div>
               ) : (
                 <div className="empty-state">
-                  <p>📂 Chưa có danh mục nào</p>
+                  <p> Chưa có danh mục nào</p>
                   <small>Tạo danh mục đầu tiên để bắt đầu!</small>
                 </div>
               )}

@@ -6,9 +6,9 @@ const Homepage = () => {
     <div className='homepage'>
         {/* <Link to="/dashboard">Dashboard</Link> */}
         <div className='left'>
-            <h1>WEB AI</h1>
-            <h2>Phát triển kỹ năng bản thân</h2>
-            <h3>Hello word</h3>
+            <h1>kd.AI</h1>
+            <h2>AI Quy trình nội bộ</h2>
+            <h3>Hello word...</h3>
             <div className='homepage-buttons'>
                 <Link to="/signup" className='get-started-btn'>Đăng ký</Link>
                 <Link to="/signin" className='login-btn'>Đăng nhập</Link>
@@ -19,7 +19,7 @@ const Homepage = () => {
                 <div className='bgContainer'>
                     <div className='bg'></div>
                 </div>
-                <img src="/bot4.png" alt="" className="bot" />
+                <img src="/bot3.png" alt="" className="bot" />
             </div>
         </div>
     </div>

@@ -10,7 +10,7 @@ const ConversationSidebar = ({
   return (
     <div className="conversation-sidebar">
       <div className="sidebar-header">
-        <h3>💬 Cuộc trò chuyện</h3>
+        <h3> Cuộc trò chuyện</h3>
         <button onClick={onCreateNew} className="new-chat-btn">
           ➕ Mới
         </button>

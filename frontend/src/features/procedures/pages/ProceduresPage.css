@@ -1,9 +1,51 @@
 /* ============================================= */
-/* PROCEDURES PAGE STYLES                      */
+/* VARIABLES (CSS Custom Properties)             */
+/* ============================================= */
+:root {
+    --color-primary: #007BFF;
+    --color-primary-dark: #0056b3;
+    --color-primary-light: #cce5ff;
+
+    --color-secondary: #17a2b8;
+    --color-secondary-dark: #117a8b;
+
+    --color-text-primary: #212529;
+    --color-text-secondary: #6c757d;
+    --color-text-light: #ffffff;
+
+    --color-bg-primary: #ffffff;
+    --color-bg-secondary: #f8f9fa;
+    --color-bg-tertiary: #e9f5ff;
+
+    --color-border: #dee2e6;
+
+    --space-xs: 4px;
+    --space-sm: 8px;
+    --space-md: 16px;
+    --space-lg: 24px;
+    --space-xl: 32px;
+    --space-xxl: 48px;
+
+    --border-radius-sm: 8px;
+    --border-radius-md: 16px;
+    --border-radius-lg: 24px;
+    --border-radius-xl: 32px;
+
+    --border-width: 1px;
+
+    --shadow-md: 0 4px 12px rgba(0, 123, 255, 0.1);
+    --shadow-lg: 0 8px 24px rgba(0, 123, 255, 0.2);
+
+    --transition-fast: all 0.3s ease-in-out;
+}
+
+/* ============================================= */
+/* PROCEDURES PAGE STYLES                       */
 /* ============================================= */
 
 .procedures-page {
     animation: page-fade-in 0.5s ease-in-out;
+    background-color: var(--color-bg-primary);
 }
 
 /* Page Header */
@@ -14,13 +56,14 @@
 }
 
 .page-header h1 {
-    font-size: 2.25rem; /* 36px */
+    font-size: 2.25rem;
     font-weight: 800;
+    color: var(--color-primary);
     margin-bottom: var(--space-sm);
 }
 
 .page-header p {
-    font-size: 1.125rem; /* 18px */
+    font-size: 1.125rem;
     color: var(--color-text-secondary);
     max-width: 600px;
     margin: 0 auto;
@@ -28,9 +71,9 @@
 
 /* Search & Filter Section */
 .search-section {
-    background-color: var(--color-bg-secondary);
-    padding: var(--space-lg);
-    border-radius: var(--border-radius-lg);
+    background-color: var(--color-bg-tertiary);
+    padding: var(--space-xl);
+    border-radius: var(--border-radius-xl);
     box-shadow: var(--shadow-md);
     margin-bottom: var(--space-xxl);
 }
@@ -95,17 +138,18 @@
 }
 
 /* ============================================= */
-/* PROCEDURE CARDS                             */
+/* PROCEDURE CARDS                              */
 /* ============================================= */
 
 .procedure-card {
-    background-color: var(--color-bg-secondary);
-    border-radius: var(--border-radius-lg);
+    background-color: #fff;
+    border-radius: var(--border-radius-xl);
     box-shadow: var(--shadow-md);
     display: flex;
     flex-direction: column;
     transition: var(--transition-fast);
     border: var(--border-width) solid transparent;
+    overflow: hidden;
 }
 
 .procedure-card:hover {
@@ -120,16 +164,17 @@
 }
 
 .procedure-header h3 {
-    font-size: 1.25rem; /* 20px */
+    font-size: 1.25rem;
     font-weight: 700;
     margin-bottom: var(--space-sm);
+    color: var(--color-primary-dark);
 }
 
 .procedure-category {
     background-color: var(--color-primary-light);
     color: var(--color-primary);
-    padding: var(--space-xs) var(--space-sm);
-    border-radius: 9999px;
+    padding: var(--space-xs) var(--space-md);
+    border-radius: 999px;
     font-size: 0.75rem;
     font-weight: 600;
     display: inline-block;
@@ -158,7 +203,8 @@
     border-top: var(--border-width) solid var(--color-border);
 }
 
-.view-button, .ask-ai-button {
+.view-button,
+.ask-ai-button {
     padding: var(--space-sm) var(--space-md);
     border-radius: var(--border-radius-md);
     text-decoration: none;
@@ -207,13 +253,14 @@
 .help-card {
     background: linear-gradient(135deg, var(--color-primary-light), var(--color-bg-tertiary));
     padding: var(--space-xl);
-    border-radius: var(--border-radius-lg);
+    border-radius: var(--border-radius-xl);
     max-width: 800px;
     margin: 0 auto;
 }
 .help-card h3 {
     font-size: 1.5rem;
     margin-bottom: var(--space-sm);
+    color: var(--color-primary-dark);
 }
 .help-card p {
     color: var(--color-text-secondary);
@@ -247,3 +294,14 @@
     background-color: var(--color-bg-tertiary);
 }
 
+/* Animations */
+@keyframes page-fade-in {
+    0% {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

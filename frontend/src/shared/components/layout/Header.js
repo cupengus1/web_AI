@@ -38,10 +38,9 @@ const Header = () => {
     <header className="app-header">
       <div className="header-container">
         {/* Logo */}
-        <Link to="/" className="logo">
-          <span className="logo-icon">🤖</span>
-          <span className="logo-text">Web AI Assistant</span>
-        </Link>
+        <div to="/" className="logo">
+          <span className="logo-text">kd.AI</span>
+        </div>
 
         {/* Navigation - remove nav-links */}
         <nav className="nav-menu">
@@ -49,14 +48,13 @@ const Header = () => {
             to="/procedures" 
             className={location.pathname === '/procedures' ? 'nav-link active' : 'nav-link'}
           >
-            📋 Quy trình
+            Quy trình
           </Link>
-          
           <Link 
             to="/chat" 
             className={location.pathname === '/chat' ? 'nav-link active' : 'nav-link'}
           >
-            💬 Chat AI
+            Chat AI
           </Link>
         </nav>
 
@@ -65,10 +63,10 @@ const Header = () => {
           {isLoggedIn ? (
             <div className="user-menu">
               <span className="welcome-text">
-                👋 Xin chào!
+                Xin chào!
               </span>
               <button onClick={handleLogout} className="logout-btn">
-                🚪 Đăng xuất
+                Đăng xuất
               </button>
             </div>
           ) : (
@@ -77,13 +75,13 @@ const Header = () => {
                 to="/signin" 
                 className="auth-link signin"
               >
-                🔑 Đăng nhập
+                Đăng nhập
               </Link>
               <Link 
                 to="/signup" 
                 className="auth-link signup"
               >
-                📝 Đăng ký
+                Đăng ký
               </Link>
             </div>
           )}
@@ -91,7 +89,7 @@ const Header = () => {
           {/* Admin Link - only show for admin users */}
           {isAdmin && (
             <Link to="/admin" className="admin-link">
-              ⚙️ Admin
+              Admin
             </Link>
           )}
         </div>

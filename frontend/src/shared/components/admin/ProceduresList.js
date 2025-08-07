@@ -75,11 +75,11 @@ const ProceduresList = ({
             
             <div className="procedure-meta">
               <small className="created-date">
-                📅 Tạo: {formatDate(procedure.createdAt)}
+                Tạo: {formatDate(procedure.createdAt)}
               </small>
               {procedure.updatedAt && procedure.updatedAt !== procedure.createdAt && (
                 <small className="updated-date">
-                  ✏️ Cập nhật: {formatDate(procedure.updatedAt)}
+                Cập nhật: {formatDate(procedure.updatedAt)}
                 </small>
               )}
             </div>
@@ -90,7 +90,7 @@ const ProceduresList = ({
                 onClick={() => onEdit(procedure)}
                 disabled={isLoading}
               >
-                ✏️ Sửa
+                Sửa
               </button>
               <button 
                 className="btn-delete"
@@ -101,7 +101,7 @@ const ProceduresList = ({
                 }}
                 disabled={isLoading}
               >
-                🗑️ Xóa
+                Xóa
               </button>
             </div>
           </div>

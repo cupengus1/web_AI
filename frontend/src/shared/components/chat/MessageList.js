@@ -32,12 +32,12 @@ const MessageList = ({ messages, isLoading }) => {
   if (messages.length === 0) {
     return (
       <div className="welcome-message">
-        <h2>👋 Xin chào!</h2>
-        <p>Tôi là AI assistant. Hãy hỏi tôi bất cứ điều gì!</p>
+        <h2>Xin chào!</h2>
+        <p>Tôi là kd.AI. Hãy hỏi tôi bất cứ điều gì!</p>
         <div className="suggestions">
-          <div className="suggestion">📋 Quy trình làm việc</div>
-          <div className="suggestion">📜 Chính sách công ty</div>
-          <div className="suggestion">💻 Hướng dẫn hệ thống</div>
+          <div className="suggestion">Quy trình làm việc</div>
+          <div className="suggestion">Chính sách công ty</div>
+          <div className="suggestion">Hướng dẫn hệ thống</div>
         </div>
       </div>
     );
