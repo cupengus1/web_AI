@@ -94,6 +94,10 @@
     margin-bottom: var(--space-xxl);
 }
 
+/* ============================================= */
+/* PROCEDURE CARDS                             */
+/* ============================================= */
+
 .procedure-card {
     background-color: var(--color-bg-secondary);
     border-radius: var(--border-radius-lg);

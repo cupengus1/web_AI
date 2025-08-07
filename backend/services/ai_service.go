@@ -1,4 +1,4 @@
-// TODO: Gọi Mistral API
+// AI Service with RAG (Retrieval-Augmented Generation)
 package services
 
 import (
@@ -8,6 +8,7 @@ import (
 	"io"
 	"net/http"
 	"os"
+	"strings"
 	"sync"
 	"time"
 
@@ -22,8 +23,85 @@ var (
 	requestMutex    sync.Mutex
 )
 
+// CallMistralAPI calls the AI with basic question
 func CallMistralAPI(question string) (string, error) {
 	return CallMistralAPIWithHistory("", question)
+}
+
+// CallMistralAPIWithRAG calls AI with relevant procedures context
+func CallMistralAPIWithRAG(userID string, question string) (string, error) {
+	// 1. Search for relevant procedures based on question
+	relevantProcedures, err := SearchProcedures(question)
+	if err != nil {
+		fmt.Printf("🔍 RAG Search Error: %v\n", err)
+		// Fallback to normal AI call if search fails
+		return CallMistralAPIWithHistory(userID, question)
+	}
+
+	// 2. Build context from relevant procedures
+	context := buildProcedureContext(relevantProcedures)
+
+	// 3. Create enhanced prompt with context
+	enhancedQuestion := buildRAGPrompt(context, question)
+
+	fmt.Printf("🤖 RAG Enhanced Question: %s\n", enhancedQuestion[:200]+"...")
+
+	// 4. Call AI with enhanced context
+	return CallMistralAPIWithHistory(userID, enhancedQuestion)
+}
+
+// buildProcedureContext creates context string from procedures
+func buildProcedureContext(procedures []models.Procedure) string {
+	if len(procedures) == 0 {
+		return "Không tìm thấy quy trình liên quan."
+	}
+
+	var contextBuilder strings.Builder
+	contextBuilder.WriteString("🔍 Thông tin quy trình liên quan:\n\n")
+
+	for i, procedure := range procedures {
+		if i >= 5 { // Limit to top 5 relevant procedures
+			break
+		}
+
+		contextBuilder.WriteString(fmt.Sprintf("**%d. %s** (Danh mục: %s)\n", i+1, procedure.Title, procedure.Category))
+
+		if procedure.Description != "" {
+			contextBuilder.WriteString(fmt.Sprintf("Mô tả: %s\n", procedure.Description))
+		}
+
+		// Truncate content if too long
+		content := procedure.Content
+		if len(content) > 500 {
+			content = content[:500] + "..."
+		}
+		contextBuilder.WriteString(fmt.Sprintf("Nội dung:\n%s\n\n", content))
+	}
+
+	return contextBuilder.String()
+}
+
+// buildRAGPrompt creates enhanced prompt with context
+func buildRAGPrompt(context string, question string) string {
+	systemPrompt := `Bạn là AI Assistant cho hệ thống quản lý quy trình nội bộ của công ty. 
+Nhiệm vụ của bạn là trả lời câu hỏi dựa trên thông tin quy trình được cung cấp.
+
+HƯỚNG DẪN TRẢ LỜI:
+1. Ưu tiên sử dụng thông tin từ quy trình được cung cấp
+2. Trả lời bằng tiếng Việt, rõ ràng và chi tiết
+3. Nếu không có thông tin liên quan, hãy thông báo và đưa ra gợi ý chung
+4. Luôn thân thiện và hỗ trợ tối đa
+
+THÔNG TIN QUY TRÌNH:
+` + context + `
+
+---
+
+CÂU HỎI: ` + question + `
+
+TRẢ LỜI:`
+
+	return systemPrompt
 }
 
 func CallMistralAPIWithHistory(userID string, question string) (string, error) {

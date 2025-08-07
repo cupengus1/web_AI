@@ -43,19 +43,36 @@ export const searchProcedures = (query) => api.get(`/api/procedures/search?q=${q
 export const getProceduresByCategory = (category) => api.get(`/api/procedures/category/${category}`);
 
 // =============================================
-// AI CHAT APIs (Tích hợp AI để giải đáp)
+// AI CHAT APIs (Tích hợp AI để giải đáp với RAG)
 // =============================================
 export const askAIAboutProcedure = (question, procedureId = null) => 
-  api.post("/api/ai/ask", { question, procedure_id: procedureId });
+  api.post("/api/chat/procedures", { question, procedure_id: procedureId });
 
-export const publicChat = (question) => api.post("/api/chat/public", { question });
+export const askAI = (question) => api.post("/api/chat", { question });
+export const askAIPublic = (question) => api.post("/api/chat/public", { question });
 
-// Chat với context về quy trình
-export const chatWithProcedureContext = (question, procedureIds) =>
-  api.post("/api/ai/chat-with-context", { question, procedure_ids: procedureIds });
+// Enhanced Chat APIs with Persistence
+export const sendChatMessage = (message, conversationId = null) => {
+  // Check if user is logged in
+  const token = localStorage.getItem('token');
+  
+  if (token) {
+    // Authenticated user - use persistent chat endpoint
+    return api.post("/api/chat", { message, conversation_id: conversationId });
+  } else {
+    // Anonymous user - use public endpoint
+    return api.post("/api/chat/public", { question: message });
+  }
+};
+
+export const getChatHistory = () => api.get("/api/chat/history");
+export const getChatConversation = (id) => api.get(`/api/chat/conversations/${id}`);
+export const deleteChatConversation = (id) => api.delete(`/api/chat/conversations/${id}`);
 
 // Function tương thích với DashboardPage (giao diện cũ)
-export const chatWithAI = (message) => api.post("/api/chat/public", { question: message });// =============================================
+export const chatWithAI = (message) => api.post("/api/chat/public", { question: message });
+
+// =============================================
 // CONVERSATIONS APIs
 // =============================================
 export const createConversation = (title = "Cuộc trò chuyện mới") => 

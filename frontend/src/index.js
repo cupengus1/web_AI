@@ -4,6 +4,7 @@ import './index.css';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
 import Header from './shared/components/layout/Header';
+import { useLocation } from 'react-router-dom';
 import Homepage from './features/homepage/pages/Homepage';
 import SignUpPage from './features/auth/pages/SignUpPage';
 import SignInPage from './features/auth/pages/SignInPage';
@@ -13,9 +14,16 @@ import ChatPage from './pages/ChatPage';
 import ProceduresPage from './features/procedures/pages/ProceduresPage';
 
 function App() {
+  const location = useLocation();
   return (
-    <Router>
-      <Header />
+    <>
+      {/* Only show Header if not on homepage, admin, signin, signup, forgot-password */}
+      {![
+        '/',
+        '/signin',
+        '/signup',
+        '/forgot-password'
+      ].includes(location.pathname) && !location.pathname.startsWith('/admin') && <Header />}
       <Routes>
         {/* Public routes */}
         <Route path="/" element={<Homepage />} />
@@ -33,13 +41,15 @@ function App() {
         {/* Admin routes */}
         <Route path="/admin" element={<AdminDashboardCompact />} />
       </Routes>
-    </Router>
+    </>
   );
 }
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <App />
+    <Router>
+      <App />
+    </Router>
   </React.StrictMode>
 );

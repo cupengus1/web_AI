@@ -1,6 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
 import { 
-  adminLogin, 
   getCategories,
   getAdminStats,
   getProcedures,
@@ -18,6 +17,26 @@ export const useAdmin = () => {
   const [stats, setStats] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
+
+  // Check if user is admin based on JWT token
+  const checkAdminStatus = useCallback(() => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      setIsLoggedIn(false);
+      return false;
+    }
+
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      const isAdmin = payload.role === 'admin';
+      setIsLoggedIn(isAdmin);
+      return isAdmin;
+    } catch (error) {
+      console.error('Error decoding token:', error);
+      setIsLoggedIn(false);
+      return false;
+    }
+  }, []);
 
   // Debug helpers
   const debug = (action, data) => {
@@ -75,26 +94,9 @@ export const useAdmin = () => {
     }
   }, []);
 
-  const login = async (email, password) => {
-    try {
-      debug('LOGIN', { email });
-      setIsLoading(true);
-      const response = await adminLogin(email, password);
-      localStorage.setItem('adminToken', response.data.token);
-      setIsLoggedIn(true);
-      loadData();
-      debug('LOGIN_SUCCESS', 'Logged in successfully');
-    } catch (error) {
-      debug('LOGIN_ERROR', error);
-      showError(error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
   const logout = () => {
     debug('LOGOUT', 'Logging out...');
-    localStorage.removeItem('adminToken');
+    localStorage.removeItem('token');
     setIsLoggedIn(false);
     setCategories([]);
     setProcedures([]);
@@ -102,23 +104,24 @@ export const useAdmin = () => {
     setError('');
   };
 
-  // Auto-check token and load data on mount
+  // Auto-check admin status and load data on mount
   useEffect(() => {
     const checkAuth = async () => {
-      const adminToken = localStorage.getItem('adminToken');
-      console.log('🔍 CHECK AUTH - Token exists:', !!adminToken);
-      if (adminToken) {
-        debug('AUTH_CHECK', 'Found admin token, loading data...');
-        setIsLoggedIn(true);
+      const isAdmin = checkAdminStatus();
+      console.log('🔍 CHECK AUTH - Is Admin:', isAdmin);
+      if (isAdmin) {
+        debug('AUTH_CHECK', 'User has admin role, loading data...');
         try {
           await loadData();
         } catch (error) {
           console.error('🔍 LOAD DATA ERROR:', error);
+          // If loading fails, user might not have admin access
+          logout();
         }
       }
     };
     checkAuth();
-  }, [loadData]);
+  }, [checkAdminStatus, loadData]);
 
   const submitProcedure = async (procedureData, isEditing, editingId) => {
     try {
@@ -200,7 +203,6 @@ export const useAdmin = () => {
     setError,
     
     // Actions
-    login,
     logout,
     loadData,
     submitProcedure,

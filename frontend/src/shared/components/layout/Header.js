@@ -6,15 +6,26 @@ const Header = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  // Check if user is logged in
+  // Check if user is logged in and get user data
   const userToken = localStorage.getItem('token');
-  const adminToken = localStorage.getItem('adminToken');
   const isLoggedIn = !!userToken;
-  const isAdmin = !!adminToken;
+  
+  // Decode JWT to get user role
+  let userRole = 'user';
+  let isAdmin = false;
+  
+  if (userToken) {
+    try {
+      const payload = JSON.parse(atob(userToken.split('.')[1]));
+      userRole = payload.role || 'user';
+      isAdmin = userRole === 'admin';
+    } catch (error) {
+      console.error('Error decoding token:', error);
+    }
+  }
 
   const handleLogout = () => {
     localStorage.removeItem('token');
-    localStorage.removeItem('adminToken');
     navigate('/');
   };
 
@@ -32,15 +43,8 @@ const Header = () => {
           <span className="logo-text">Web AI Assistant</span>
         </Link>
 
-        {/* Navigation */}
+        {/* Navigation - remove nav-links */}
         <nav className="nav-menu">
-          <Link 
-            to="/" 
-            className={location.pathname === '/' ? 'nav-link active' : 'nav-link'}
-          >
-            🏠 Trang chủ
-          </Link>
-          
           <Link 
             to="/procedures" 
             className={location.pathname === '/procedures' ? 'nav-link active' : 'nav-link'}
@@ -84,14 +88,10 @@ const Header = () => {
             </div>
           )}
           
-          {/* Admin Link */}
-          {isAdmin ? (
+          {/* Admin Link - only show for admin users */}
+          {isAdmin && (
             <Link to="/admin" className="admin-link">
               ⚙️ Admin
-            </Link>
-          ) : (
-            <Link to="/admin" className="admin-link-hidden">
-              ⚙️
             </Link>
           )}
         </div>

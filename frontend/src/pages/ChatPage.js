@@ -71,12 +71,6 @@ const ChatPage = () => {
           <header className="chat-header">
             <h1>🤖 AI Assistant</h1>
             <div className="header-actions">
-              <button onClick={createNewConversation} className="new-chat-header-btn">
-                ➕ Tạo mới
-              </button>
-              <button onClick={handleLogout} className="logout-btn">
-                🚪 Đăng xuất
-              </button>
             </div>
           </header>
 

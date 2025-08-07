@@ -13,9 +13,6 @@ func SetupRoutes(router *gin.Engine) {
 	router.POST("/api/auth/register", handlers.Register)
 	router.POST("/api/auth/login", handlers.Login)
 
-	// Admin routes
-	router.POST("/api/admin/login", handlers.AdminLogin)
-
 	// Public routes (no authentication required)
 	router.GET("/api/procedures", handlers.GetProcedures)
 	router.GET("/api/procedures/:id", handlers.GetProcedureById)
@@ -23,18 +20,22 @@ func SetupRoutes(router *gin.Engine) {
 	router.GET("/api/procedures/category/:category", handlers.GetProceduresByCategory)
 	router.GET("/api/categories", handlers.GetCategories)
 	router.POST("/api/chat/public", handlers.HandleAIChat)
+	router.POST("/api/chat/procedures", handlers.HandleProcedureAIChat) // New AI endpoint
 
 	// Protected routes (require authentication)
 	authGroup := router.Group("/api")
 	authGroup.Use(middleware.JWTAuth())
 	{
 		authGroup.POST("/chat", handlers.HandleAIChat)
+		authGroup.GET("/chat/history", handlers.GetChatHistory)
+		authGroup.GET("/chat/conversations/:id", handlers.GetChatConversation)
+		authGroup.DELETE("/chat/conversations/:id", handlers.DeleteChatConversation)
 		authGroup.GET("/history", handlers.GetHistory)
 	}
 
-	// Admin protected routes
+	// Admin protected routes (require admin role)
 	adminGroup := router.Group("/api/admin")
-	adminGroup.Use(middleware.JWTAuth())
+	adminGroup.Use(middleware.AdminAuth())
 	{
 		// Procedure management
 		adminGroup.POST("/procedures", handlers.CreateProcedure)

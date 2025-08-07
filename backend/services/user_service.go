@@ -4,6 +4,7 @@ package services
 import (
 	"context"
 	"errors"
+	"strings"
 	"web_AI/config"
 	"web_AI/models"
 	"web_AI/utils"
@@ -23,11 +24,19 @@ func RegisterUser(name, email, password string) (*models.User, error) {
 	}
 
 	hashed, _ := utils.HashPassword(password)
+
+	// Set default role - check if email contains "admin"
+	role := "user"
+	if strings.Contains(email, "admin") {
+		role = "admin"
+	}
+
 	user := models.User{
 		ID:       primitive.NewObjectID(),
 		Name:     name,
 		Email:    email,
 		Password: hashed,
+		Role:     role,
 	}
 
 	_, err = userCol.InsertOne(context.TODO(), user)

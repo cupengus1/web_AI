@@ -144,10 +144,10 @@ const ProceduresPage = () => {
                                     📖 Xem chi tiết
                                 </Link>
                                 <Link 
-                                    to={`/chat?procedure=${procedure._id}`}
+                                    to={`/chat`}
                                     className='ask-ai-button'
                                 >
-                                    🤖 Hỏi AI về quy trình này
+                                    🤖 Hỏi AI về quy trình
                                 </Link>
                             </div>
                         </div>

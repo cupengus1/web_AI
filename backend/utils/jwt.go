@@ -23,9 +23,10 @@ func getJWTKey() []byte {
 	return jwtKey
 }
 
-func GenerateJWT(userID string) (string, error) {
+func GenerateJWT(userID string, role string) (string, error) {
 	claims := jwt.MapClaims{
 		"user_id": userID,
+		"role":    role,
 		"exp":     time.Now().Add(time.Hour * 72).Unix(),
 	}
 
@@ -33,7 +34,7 @@ func GenerateJWT(userID string) (string, error) {
 	return token.SignedString(getJWTKey())
 }
 
-func ValidateJWT(tokenString string) (string, error) {
+func ValidateJWT(tokenString string) (string, string, error) {
 	fmt.Printf("🔍 JWT DEBUG - Validating token: %s\n", tokenString[:20]+"...")
 	fmt.Printf("🔍 JWT DEBUG - JWT_SECRET exists: %v\n", len(jwtKey) > 0)
 
@@ -46,16 +47,22 @@ func ValidateJWT(tokenString string) (string, error) {
 
 	if err != nil {
 		fmt.Printf("🔍 JWT DEBUG - Parse error: %v\n", err)
-		return "", err
+		return "", "", err
 	}
 
 	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
-		if userID, ok := claims["user_id"].(string); ok {
-			fmt.Printf("🔍 JWT DEBUG - Valid token for user: %s\n", userID)
-			return userID, nil
+		userID, userIDOk := claims["user_id"].(string)
+		role, roleOk := claims["role"].(string)
+
+		if userIDOk {
+			if !roleOk {
+				role = "user" // default role if not specified
+			}
+			fmt.Printf("🔍 JWT DEBUG - Valid token for user: %s, role: %s\n", userID, role)
+			return userID, role, nil
 		}
-		return "", fmt.Errorf("invalid user_id in token")
+		return "", "", fmt.Errorf("invalid user_id in token")
 	}
 
-	return "", fmt.Errorf("invalid token")
+	return "", "", fmt.Errorf("invalid token")
 }

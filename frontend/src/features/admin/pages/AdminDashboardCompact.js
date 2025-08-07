@@ -16,7 +16,6 @@ const AdminDashboard = () => {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('dashboard');
   const [selectedFile, setSelectedFile] = useState(null);
-  const [loginForm, setLoginForm] = useState({ email: '', password: '' });
 
   // Admin logic
   const {
@@ -27,7 +26,6 @@ const AdminDashboard = () => {
     isLoading,
     error,
     setError,
-    login,
     logout,
     submitProcedure,
     removeProcedure,
@@ -60,11 +58,6 @@ const AdminDashboard = () => {
   };
 
   // Handlers
-  const handleLogin = async (e) => {
-    e.preventDefault();
-    await login(loginForm.email, loginForm.password);
-  };
-
   const handleLogout = () => {
     logout();
     resetForm();
@@ -120,50 +113,31 @@ const AdminDashboard = () => {
     if (error) setError(''); // Clear error when typing
   };
 
-  // Login Form Component
-  const LoginForm = () => (
-    <div className="admin-login">
-      <div className="login-card">
-        <h2>🔐 Admin Login</h2>
-        {error && <div className="error-message">{error}</div>}
-        <form onSubmit={handleLogin}>
-          <FormField
-            label="Email"
-            type="email"
-            field="email"
-            value={loginForm.email}
-            onChange={(field, value) => setLoginForm({...loginForm, [field]: value})}
-            required
-            disabled={isLoading}
-            placeholder="admin@example.com"
-          />
-          <FormField
-            label="Password"
-            type="password"
-            field="password"
-            value={loginForm.password}
-            onChange={(field, value) => setLoginForm({...loginForm, [field]: value})}
-            required
-            disabled={isLoading}
-            placeholder="••••••••"
-          />
-          <button type="submit" disabled={isLoading} className="btn-primary full-width">
-            {isLoading ? 'Đang đăng nhập...' : 'Đăng nhập'}
-          </button>
-        </form>
-      </div>
-    </div>
-  );
 
-  // Input Field Component - Remove this old inline component
   
-  if (!isLoggedIn) return <LoginForm />;
+  // Check if user has admin access
+  if (!isLoggedIn) {
+    return (
+      <div className="admin-login">
+        <div className="login-container">
+          <h2>🔒 Admin Access Required</h2>
+          <p>Bạn cần đăng nhập với tài khoản admin để truy cập trang này.</p>
+          <button onClick={() => navigate('/signin')} className="login-redirect-btn">
+            Đăng nhập
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="admin-dashboard">
       <header className="admin-header">
         <h1>⚙️ Admin Panel</h1>
-        <button onClick={handleLogout} className="logout-btn">Đăng xuất</button>
+        <div style={{ display: 'flex', gap: '10px' }}>
+          <button onClick={() => navigate('/dashboard')} className="back-dashboard-btn">⬅️ Quay về Dashboard</button>
+          <button onClick={handleLogout} className="logout-btn">Đăng xuất</button>
+        </div>
       </header>
 
       <nav className="admin-nav">
