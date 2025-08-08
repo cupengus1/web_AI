@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import './ChatPage.css';
 
 // Hooks
@@ -13,6 +13,16 @@ import ConversationSidebar from '../shared/components/chat/ConversationSidebar';
 const ChatPage = () => {
   const [newMessage, setNewMessage] = useState('');
   const navigate = useNavigate();
+  const location = useLocation();
+  
+  useEffect(() => {
+    // Kiểm tra nếu có initialQuestion từ state
+    if (location.state?.initialQuestion) {
+      setNewMessage(location.state.initialQuestion);
+      // Clear state để tránh hiển thị lại khi refresh
+      navigate(location.pathname, { replace: true });
+    }
+  }, [location.state, navigate]);
   
   const {
     conversations,

@@ -1,0 +1,97 @@
+.procedure-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.procedure-modal-content {
+  background: white;
+  padding: 24px;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 800px;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+}
+
+.procedure-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.procedure-modal-header h2 {
+  margin: 0;
+  color: #1e293b;
+  font-size: 1.5rem;
+}
+
+.close-button {
+  background: none;
+  border: none;
+  font-size: 24px;
+  color: #64748b;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 4px;
+}
+
+.close-button:hover {
+  background: #f1f5f9;
+  color: #0f172a;
+}
+
+.procedure-info {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.procedure-category,
+.procedure-date,
+.procedure-views {
+  background: #f8fafc;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  color: #475569;
+}
+
+.procedure-description,
+.procedure-content {
+  margin-bottom: 24px;
+}
+
+.procedure-description h3,
+.procedure-content h3 {
+  color: #334155;
+  margin-bottom: 12px;
+  font-size: 1.1rem;
+}
+
+.procedure-description p {
+  color: #475569;
+  line-height: 1.6;
+}
+
+.content-text {
+  background: #f8fafc;
+  padding: 16px;
+  border-radius: 8px;
+  color: #334155;
+  line-height: 1.8;
+  white-space: pre-wrap;
+}

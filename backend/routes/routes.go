@@ -43,6 +43,12 @@ func SetupRoutes(router *gin.Engine) {
 		adminGroup.DELETE("/procedures/:id", handlers.DeleteProcedure)
 		adminGroup.POST("/procedures/upload", handlers.UploadProcedureFile)
 
+		// User management
+		adminGroup.GET("/users", handlers.GetAllUsers)
+		adminGroup.POST("/users", handlers.CreateUser)
+		adminGroup.PUT("/users/:id", handlers.UpdateUser)
+		adminGroup.DELETE("/users/:id", handlers.DeleteUser)
+
 		// Category management
 		adminGroup.POST("/categories", handlers.CreateCategory)
 

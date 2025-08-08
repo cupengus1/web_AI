@@ -1,15 +1,18 @@
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { getProcedures, getCategories, searchProcedures } from '../../../shared/api/api';
+import ProcedureModal from '../../../shared/components/procedures/ProcedureModal';
 import './ProceduresPage.css';
 
 const ProceduresPage = () => {
+    const navigate = useNavigate();
     const [procedures, setProcedures] = useState([]);
     const [categories, setCategories] = useState([]);
     const [loading, setLoading] = useState(true);
     const [searchQuery, setSearchQuery] = useState('');
     const [selectedCategory, setSelectedCategory] = useState('');
     const [filteredProcedures, setFilteredProcedures] = useState([]);
+    const [selectedProcedure, setSelectedProcedure] = useState(null);
 
     useEffect(() => {
         fetchData();
@@ -142,18 +145,22 @@ const ProceduresPage = () => {
                                 </span>
                             </div>
                             <div className='procedure-actions'>
-                                <Link 
-                                    to={`/procedures/${procedure._id}`} 
+                                <button 
+                                    onClick={() => setSelectedProcedure(procedure)}
                                     className='view-button'
                                 >
                                     📖 Xem chi tiết
-                                </Link>
-                                <Link 
-                                    to={`/chat`}
+                                </button>
+                                <button 
+                                    onClick={() => navigate('/chat', { 
+                                        state: { 
+                                            initialQuestion: `Tôi muốn hỏi về quy trình: ${procedure.title}` 
+                                        }
+                                    })}
                                     className='ask-ai-button'
                                 >
                                     🤖 Hỏi AI về quy trình
-                                </Link>
+                                </button>
                             </div>
                         </div>
                     ))
@@ -165,6 +172,13 @@ const ProceduresPage = () => {
                     </div>
                 )}
             </div>
+
+            {selectedProcedure && (
+                <ProcedureModal
+                    procedure={selectedProcedure}
+                    onClose={() => setSelectedProcedure(null)}
+                />
+            )}
 
             <div className='quick-help'>
                 <div className='help-card'>

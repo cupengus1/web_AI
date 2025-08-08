@@ -11,6 +11,7 @@ import StatsCard from '../../../shared/components/admin/StatsCard';
 import FormField from '../../../shared/components/admin/FormField';
 import ProcedureForm from '../../../shared/components/admin/ProcedureForm';
 import ProceduresList from '../../../shared/components/admin/ProceduresList';
+import AdminUserManagement from './AdminUserManagement';
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
@@ -176,7 +177,8 @@ const AdminDashboard = () => {
           { key: 'dashboard', label: 'Dashboard' },
           { key: 'procedures', label: ' Quy trình' },
           { key: 'upload', label: ' Upload' },
-          { key: 'categories', label: ' Danh mục' }
+          { key: 'categories', label: ' Danh mục' },
+          { key: 'users', label: ' Người dùng' }
         ].map(tab => (
           <button 
             key={tab.key}
@@ -187,6 +189,10 @@ const AdminDashboard = () => {
           </button>
         ))}
       </nav>
+        {/* Users */}
+        {activeTab === 'users' && (
+          <AdminUserManagement />
+        )}
 
       <main className="admin-content">
         {error && (
