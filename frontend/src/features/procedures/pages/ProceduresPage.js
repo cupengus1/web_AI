@@ -15,9 +15,7 @@ const ProceduresPage = () => {
         fetchData();
     }, []);
 
-    useEffect(() => {
-        filterProcedures();
-    }, [procedures, searchQuery, selectedCategory]);
+
 
     const fetchData = async () => {
         try {
@@ -34,39 +32,46 @@ const ProceduresPage = () => {
         }
     };
 
-    const filterProcedures = () => {
-        let filtered = procedures;
 
-        // Filter by search query
-        if (searchQuery) {
-            filtered = filtered.filter(procedure =>
-                procedure.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                procedure.description?.toLowerCase().includes(searchQuery.toLowerCase())
-            );
-        }
-
-        // Filter by category
-        if (selectedCategory) {
-            filtered = filtered.filter(procedure => procedure.category === selectedCategory);
-        }
-
-        setFilteredProcedures(filtered);
+    // Lọc theo danh mục (không realtime)
+    const filterByCategory = (proceduresList, category) => {
+        if (!category) return proceduresList;
+        return proceduresList.filter(p => p.category === category);
     };
 
+
+    // Khi bấm nút tìm kiếm
     const handleSearch = async (e) => {
         e.preventDefault();
-        if (searchQuery.trim()) {
-            try {
-                setLoading(true);
+        setLoading(true);
+        try {
+            let result = procedures;
+            // Nếu có searchQuery thì gọi API search, ngược lại lấy toàn bộ procedures
+            if (searchQuery.trim()) {
                 const response = await searchProcedures(searchQuery);
-                setFilteredProcedures(response.data.procedures || []);
-            } catch (error) {
-                console.error('Search error:', error);
-            } finally {
-                setLoading(false);
+                result = response.data.procedures || [];
             }
+            // Lọc theo category nếu có
+            result = filterByCategory(result, selectedCategory);
+            setFilteredProcedures(result);
+        } catch (error) {
+            console.error('Search error:', error);
+        } finally {
+            setLoading(false);
         }
     };
+
+    // Khi đổi danh mục thì lọc lại (nếu đã có kết quả tìm kiếm)
+    useEffect(() => {
+        // Nếu chưa từng tìm kiếm thì lấy toàn bộ procedures theo category
+        if (!searchQuery.trim()) {
+            setFilteredProcedures(filterByCategory(procedures, selectedCategory));
+        } else {
+            // Nếu đã có kết quả tìm kiếm thì lọc lại trên filteredProcedures
+            setFilteredProcedures(prev => filterByCategory(prev, selectedCategory));
+        }
+        // eslint-disable-next-line
+    }, [selectedCategory, procedures]);
 
     if (loading) {
         return (

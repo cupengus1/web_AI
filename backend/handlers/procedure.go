@@ -2,11 +2,16 @@ package handlers
 
 import (
 	"net/http"
+	"os"
+	"strings"
 	"web_AI/models"
 	"web_AI/services"
 
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson/primitive"
+
+	pdf "github.com/ledongthuc/pdf"
+	"github.com/unidoc/unioffice/document"
 )
 
 // GetProcedures handles GET /api/procedures
@@ -200,8 +205,86 @@ func UploadProcedureFile(c *gin.Context) {
 		return
 	}
 
-	// TODO: Implement file upload service
-	c.JSON(http.StatusNotImplemented, gin.H{"error": "File upload not implemented yet"})
+	// Save file to uploads directory
+	uploadDir := "uploads"
+	if err := ensureDir(uploadDir); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Could not create upload directory"})
+		return
+	}
+	filePath := uploadDir + "/" + file.Filename
+	if err := c.SaveUploadedFile(file, filePath); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to save file"})
+		return
+	}
+
+	// Trích xuất nội dung file nếu là PDF hoặc Word
+	contentText := ""
+	switch fileHeader {
+	case "application/pdf":
+		f, err := os.Open(filePath)
+		if err == nil {
+			defer f.Close()
+			r, err := pdf.NewReader(f, file.Size)
+			if err == nil {
+				var sb strings.Builder
+				n := r.NumPage()
+				for i := 1; i <= n; i++ {
+					p := r.Page(i)
+					if p.V.IsNull() {
+						continue
+					}
+					text, _ := p.GetPlainText(nil)
+					// Xử lý: thêm khoảng trắng sau bullet, loại ký tự lạ, giữ xuống dòng
+					text = strings.ReplaceAll(text, "", "\n- ")
+					text = strings.ReplaceAll(text, "-[]", "- [ ] ")
+					text = strings.ReplaceAll(text, "\u00a0", " ") // non-breaking space
+					text = strings.ReplaceAll(text, "\u200b", "")  // zero-width space
+					text = strings.ReplaceAll(text, "\n", "\n")    // giữ xuống dòng
+					sb.WriteString(text)
+				}
+				contentText = sb.String()
+			}
+		}
+	case "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
+		doc, err := document.Open(filePath)
+		if err == nil {
+			var sb strings.Builder
+			for _, para := range doc.Paragraphs() {
+				for _, run := range para.Runs() {
+					sb.WriteString(run.Text())
+				}
+				sb.WriteString("\n")
+			}
+			contentText = sb.String()
+		}
+	}
+	if contentText == "" {
+		contentText = filePath // fallback: lưu đường dẫn file nếu không trích xuất được
+	}
+	procedure := &models.Procedure{
+		Title:       title,
+		Content:     contentText,
+		Category:    category,
+		Description: "File upload: " + file.Filename,
+	}
+	err = services.CreateProcedure(procedure)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to save procedure info"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"message":   "File uploaded successfully",
+		"procedure": procedure,
+	})
+}
+
+// ensureDir creates the directory if not exists
+func ensureDir(dirName string) error {
+	if _, err := os.Stat(dirName); os.IsNotExist(err) {
+		return os.MkdirAll(dirName, 0755)
+	}
+	return nil
 }
 
 // GetCategories handles GET /api/categories

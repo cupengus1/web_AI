@@ -16,6 +16,7 @@ const AdminDashboard = () => {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('dashboard');
   const [selectedFile, setSelectedFile] = useState(null);
+  const [filePreview, setFilePreview] = useState('');
 
   // Admin logic
   const {
@@ -77,7 +78,37 @@ const AdminDashboard = () => {
       return;
     }
     await uploadFile(selectedFile, procedureForm.title, procedureForm.category);
-    resetForm();
+
+    // Xử lý preview nội dung file sau khi upload thành công
+    try {
+      if (selectedFile.type === 'application/pdf') {
+        // Đọc PDF (chỉ text đơn giản, không hỗ trợ layout)
+        const reader = new FileReader();
+        reader.onload = async (ev) => {
+          // Sử dụng PDF.js nếu muốn nâng cao, ở đây chỉ hiển thị base64
+          setFilePreview('Đã upload file PDF. Không hỗ trợ xem trước nội dung trực tiếp.');
+        };
+        reader.readAsArrayBuffer(selectedFile);
+      } else if (
+        selectedFile.type === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' ||
+        selectedFile.name.endsWith('.docx')
+      ) {
+        setFilePreview('Đã upload file Word. Không hỗ trợ xem trước nội dung trực tiếp.');
+      } else if (selectedFile.type.startsWith('text/')) {
+        // Đọc file text/csv
+        const reader = new FileReader();
+        reader.onload = (ev) => {
+          setFilePreview(ev.target.result);
+        };
+        reader.readAsText(selectedFile);
+      } else {
+        setFilePreview('Đã upload file. Định dạng này không hỗ trợ xem trước.');
+      }
+    } catch (err) {
+      setFilePreview('Không thể trích xuất nội dung file.');
+    }
+    // Không reset form để giữ preview
+    setSelectedFile(null);
   };
 
   const handleCategorySubmit = async (e) => {
@@ -251,7 +282,7 @@ const AdminDashboard = () => {
                 field="file"
                 value=""
                 onChange={(field, file) => setSelectedFile(file)}
-                accept=".doc,.docx,.pdf"
+                accept=".doc,.docx,.pdf,.txt,.csv"
                 required
                 disabled={isLoading}
               />
@@ -267,6 +298,14 @@ const AdminDashboard = () => {
                 {isLoading ? 'Đang upload...' : 'Upload File'}
               </button>
             </form>
+            {filePreview && (
+              <div className="file-preview" style={{marginTop:20}}>
+                <strong>Xem trước/trích xuất nội dung file:</strong>
+                <div className="content-preview" style={{whiteSpace:'pre-wrap',maxHeight:300,overflow:'auto',marginTop:8}}>
+                  {filePreview}
+                </div>
+              </div>
+            )}
           </div>
         )}
 
