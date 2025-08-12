@@ -1,4 +1,4 @@
-// TODO: Định nghĩa các API routes
+// Định nghĩa các API routes (bảo vệ bởi JWT với các nhóm /api và /api/admin)
 package routes
 
 import (

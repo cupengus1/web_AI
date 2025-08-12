@@ -1,5 +1,11 @@
 import React from 'react';
 
+// Ô nhập tin nhắn và nút gửi
+// Props:
+// - value: giá trị hiện tại của ô nhập
+// - onChange: (text) => void — cập nhật giá trị
+// - onSubmit: (event) => void — gửi tin nhắn
+// - isLoading: boolean — đang chờ phản hồi AI, disable input/nút
 const MessageInput = ({ value, onChange, onSubmit, isLoading }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -9,7 +15,7 @@ const MessageInput = ({ value, onChange, onSubmit, isLoading }) => {
   return (
     <form onSubmit={handleSubmit} className="message-input">
       <div className="input-container">
-        <input
+  <input
           type="text"
           value={value}
           onChange={(e) => onChange(e.target.value)}

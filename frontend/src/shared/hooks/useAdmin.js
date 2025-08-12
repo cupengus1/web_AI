@@ -10,6 +10,7 @@ import {
   createCategory
 } from '../api/api';
 
+// Hook quản trị: quản lý trạng thái admin, tải danh mục/quy trình/thống kê và xử lý CRUD
 export const useAdmin = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [categories, setCategories] = useState([]);
@@ -18,7 +19,7 @@ export const useAdmin = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
 
-  // Check if user is admin based on JWT token
+  // Kiểm tra quyền admin dựa trên JWT
   const checkAdminStatus = useCallback(() => {
     const token = localStorage.getItem('token');
     if (!token) {
@@ -38,7 +39,7 @@ export const useAdmin = () => {
     }
   }, []);
 
-  // Debug helpers
+  // Hàm hỗ trợ debug trong môi trường phát triển
   const debug = (action, data) => {
     if (process.env.NODE_ENV === 'development') {
       console.log(`🐛 Admin Debug [${action}]:`, data);
@@ -72,7 +73,7 @@ export const useAdmin = () => {
       console.log('🔍 STATS RESPONSE:', statsRes);
       console.log('🔍 PROCEDURES RESPONSE:', proceduresRes);
       
-      // Extract data from responses
+      // Trích xuất dữ liệu từ phản hồi API
       const categoriesData = categoriesRes.data?.categories || categoriesRes.data || [];
       const statsData = statsRes.data || statsRes;
       const proceduresData = proceduresRes.data?.procedures || proceduresRes.data || [];
@@ -104,7 +105,7 @@ export const useAdmin = () => {
     setError('');
   };
 
-  // Auto-check admin status and load data on mount
+  // Tự động kiểm tra quyền admin và tải dữ liệu khi mount
   useEffect(() => {
     const checkAuth = async () => {
       const isAdmin = checkAdminStatus();
@@ -115,7 +116,7 @@ export const useAdmin = () => {
           await loadData();
         } catch (error) {
           console.error('🔍 LOAD DATA ERROR:', error);
-          // If loading fails, user might not have admin access
+          // Nếu tải dữ liệu thất bại, có thể người dùng không còn quyền admin
           logout();
         }
       }
@@ -136,7 +137,7 @@ export const useAdmin = () => {
         showSuccess('Tạo quy trình thành công!');
       }
       
-      // Refresh procedures list
+  // Làm mới danh sách quy trình
       loadData();
     } catch (error) {
       debug('SUBMIT_PROCEDURE_ERROR', error);
@@ -153,7 +154,7 @@ export const useAdmin = () => {
       await deleteProcedure(procedureId);
       showSuccess('Xóa quy trình thành công!');
       
-      // Refresh procedures list
+  // Làm mới danh sách quy trình
       loadData();
     } catch (error) {
       debug('DELETE_PROCEDURE_ERROR', error);

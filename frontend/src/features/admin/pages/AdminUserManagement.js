@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import api from '../../../shared/api/api';
 import './AdminUserManagement.css';
 
+// Form tạo/sửa người dùng
 const UserForm = ({ user, onSubmit, onCancel }) => {
   const [formData, setFormData] = useState({
     name: user?.name || '',
@@ -59,8 +60,9 @@ const UserForm = ({ user, onSubmit, onCancel }) => {
       <div className="form-group">
         <label>Vai trò:</label>
         <select name="role" value={formData.role} onChange={handleChange}>
-          <option value="user">User</option>
-          <option value="admin">Admin</option>
+          {/* Giữ nguyên value để backend hiểu, chỉ đổi nhãn hiển thị */}
+          <option value="user">Người dùng</option>
+          <option value="admin">Quản trị</option>
         </select>
       </div>
       <div className="form-actions">
@@ -75,12 +77,15 @@ const UserForm = ({ user, onSubmit, onCancel }) => {
   );
 };
 
+// Trang quản lý người dùng: danh sách, thêm, sửa, xoá
 const AdminUserManagement = () => {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [editingUser, setEditingUser] = useState(null);
   const [isAddingUser, setIsAddingUser] = useState(false);
+  const [query, setQuery] = useState('');
+  const [roleFilter, setRoleFilter] = useState('all');
 
   useEffect(() => {
     fetchUsers();
@@ -132,19 +137,44 @@ const AdminUserManagement = () => {
     }
   };
 
+  // Lọc theo từ khóa và vai trò
+  const filtered = users.filter(u => {
+    const text = `${u.name} ${u.email}`.toLowerCase();
+    const okText = text.includes(query.toLowerCase());
+    const okRole = roleFilter === 'all' ? true : u.role === roleFilter;
+    return okText && okRole;
+  });
+
   return (
     <div className="admin-user-management">
       <h2>Quản lý người dùng</h2>
       {error && <div className="error-message">{error}</div>}
-      
-      <div className="actions">
-        <button 
-          className="btn-add" 
-          onClick={() => setIsAddingUser(true)}
-          disabled={loading || isAddingUser || editingUser}
-        >
-          Thêm User Mới
-        </button>
+
+      <div className="toolbar">
+        <div className="search">
+          <input
+            type="text"
+            placeholder="Tìm theo tên hoặc email..."
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+          />
+        </div>
+        <div className="filters">
+          <select value={roleFilter} onChange={(e) => setRoleFilter(e.target.value)}>
+            <option value="all">Tất cả vai trò</option>
+            <option value="admin">Quản trị</option>
+            <option value="user">Người dùng</option>
+          </select>
+        </div>
+        <div className="actions">
+          <button 
+            className="btn-add" 
+            onClick={() => setIsAddingUser(true)}
+            disabled={loading || isAddingUser || editingUser}
+          >
+            ➕ Thêm User
+          </button>
+        </div>
       </div>
 
       {(isAddingUser || editingUser) && (
@@ -174,26 +204,30 @@ const AdminUserManagement = () => {
             </tr>
           </thead>
           <tbody>
-            {users.map((user, idx) => (
+            {filtered.map((user, idx) => (
               <tr key={user.id}>
                 <td>{idx + 1}</td>
                 <td>{user.name}</td>
                 <td>{user.email}</td>
-                <td>{user.role}</td>
+                <td>
+                  <span className={`role-badge ${user.role}`}>
+                    {user.role === 'admin' ? 'Quản trị' : 'Người dùng'}
+                  </span>
+                </td>
                 <td className="actions">
                   <button
                     className="btn-edit"
                     onClick={() => setEditingUser(user)}
                     disabled={isAddingUser || editingUser}
                   >
-                    Sửa
+                    ✏️ Sửa
                   </button>
                   <button
                     className="btn-delete"
                     onClick={() => handleDeleteUser(user.id)}
                     disabled={isAddingUser || editingUser}
                   >
-                    Xóa
+                    🗑️ Xóa
                   </button>
                 </td>
               </tr>

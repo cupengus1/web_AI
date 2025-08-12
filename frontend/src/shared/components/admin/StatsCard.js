@@ -1,5 +1,6 @@
 import React from 'react';
 
+// Thẻ hiển thị chỉ số (kèm icon), hiển thị placeholder khi đang tải
 const StatsCard = ({ icon, title, value, isLoading }) => {
   if (isLoading) {
     return (

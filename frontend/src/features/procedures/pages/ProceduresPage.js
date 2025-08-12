@@ -4,6 +4,7 @@ import { getProcedures, getCategories, searchProcedures } from '../../../shared/
 import ProcedureModal from '../../../shared/components/procedures/ProcedureModal';
 import './ProceduresPage.css';
 
+// Trang danh sách Quy trình: tìm kiếm, lọc theo danh mục, xem chi tiết, hỏi AI
 const ProceduresPage = () => {
     const navigate = useNavigate();
     const [procedures, setProcedures] = useState([]);
@@ -29,7 +30,7 @@ const ProceduresPage = () => {
             setProcedures(proceduresRes.data.procedures || []);
             setCategories(categoriesRes.data.categories || []);
         } catch (error) {
-            console.error('Error fetching data:', error);
+            console.error('Lỗi tải dữ liệu:', error);
         } finally {
             setLoading(false);
         }
@@ -58,7 +59,7 @@ const ProceduresPage = () => {
             result = filterByCategory(result, selectedCategory);
             setFilteredProcedures(result);
         } catch (error) {
-            console.error('Search error:', error);
+            console.error('Lỗi tìm kiếm:', error);
         } finally {
             setLoading(false);
         }
@@ -138,7 +139,8 @@ const ProceduresPage = () => {
                             </p>
                             <div className='procedure-meta'>
                                 <span className='procedure-date'>
-                                    📅 {new Date(procedure.created_at).toLocaleDateString('vi-VN')}
+                                    {/* Hỗ trợ cả createdAt và created_at */}
+                                    📅 {new Date(procedure.createdAt || procedure.created_at).toLocaleDateString('vi-VN')}
                                 </span>
                                 <span className='procedure-views'>
                                     👁️ {procedure.views || 0} lượt xem
@@ -181,15 +183,11 @@ const ProceduresPage = () => {
             )}
 
             <div className='quick-help'>
-                <div className='help-card'>
+                <div className='header-container'>
                     <h3>💡 Không tìm thấy quy trình bạn cần?</h3>
-                    <p>Hãy thử hỏi AI hoặc liên hệ bộ phận IT</p>
-                    <div className='help-actions'>
+                    <div className='header-container'>
                         <Link to='/chat' className='help-button primary'>
-                            🤖 Hỏi AI
-                        </Link>
-                        <Link to='/contact' className='help-button secondary'>
-                            📞 Liên hệ IT
+                            Hỏi AI
                         </Link>
                     </div>
                 </div>

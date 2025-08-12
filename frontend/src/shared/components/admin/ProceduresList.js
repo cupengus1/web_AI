@@ -1,5 +1,6 @@
 import React from 'react';
 
+// Danh sách các Quy trình, hỗ trợ sửa/xoá
 const ProceduresList = ({ 
   procedures, 
   categories, 
@@ -7,11 +8,13 @@ const ProceduresList = ({
   onDelete, 
   isLoading 
 }) => {
+  // Lấy tên danh mục từ id
   const getCategoryName = (categoryId) => {
     const category = categories.find(cat => cat.id === categoryId);
     return category ? category.name : 'Không xác định';
   };
 
+  // Định dạng ngày tiếng Việt
   const formatDate = (dateString) => {
     return new Date(dateString).toLocaleDateString('vi-VN', {
       year: 'numeric',

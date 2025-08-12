@@ -10,16 +10,17 @@ import MessageList from '../shared/components/chat/MessageList';
 import MessageInput from '../shared/components/chat/MessageInput';
 import ConversationSidebar from '../shared/components/chat/ConversationSidebar';
 
+// Trang Chat chính: bố cục gồm Sidebar (danh sách cuộc trò chuyện) và Khu vực chat (tin nhắn + ô nhập)
 const ChatPage = () => {
   const [newMessage, setNewMessage] = useState('');
   const navigate = useNavigate();
   const location = useLocation();
   
   useEffect(() => {
-    // Kiểm tra nếu có initialQuestion từ state
+    // Nếu được điều hướng từ nơi khác với câu hỏi ban đầu, tự động điền vào ô nhập
     if (location.state?.initialQuestion) {
       setNewMessage(location.state.initialQuestion);
-      // Clear state để tránh hiển thị lại khi refresh
+      // Xoá state để tránh tự điền lại khi refresh/trở lại trang
       navigate(location.pathname, { replace: true });
     }
   }, [location.state, navigate]);
@@ -46,12 +47,10 @@ const ChatPage = () => {
   };
 
   const handleLogout = () => {
-    // Clear user data
+    // Đăng xuất: xoá các token lưu cục bộ
     localStorage.removeItem('token');
     localStorage.removeItem('adminToken');
-    localStorage.removeItem('chatConversations');
-    
-    // Redirect to homepage
+    // Điều hướng về trang chủ
     navigate('/');
   };
 
@@ -60,12 +59,13 @@ const ChatPage = () => {
       {error && (
         <div className="error-toast">
           {error}
-          <button onClick={() => setError('')}>×</button>
+          {/* Nút đóng thông báo lỗi */}
+          <button onClick={() => setError('')} aria-label="Đóng" title="Đóng">×</button>
         </div>
       )}
 
       <div className="chat-layout">
-        {/* Sidebar */}
+        {/* Sidebar: danh sách cuộc trò chuyện */}
         <aside className="chat-sidebar">
           <ConversationSidebar
             conversations={conversations}
@@ -76,10 +76,10 @@ const ChatPage = () => {
           />
         </aside>
         
-        {/* Main Chat */}
+        {/* Khu vực chat chính */}
         <main className="chat-main">
           <header className="chat-header">
-            <h1>🤖 AI Assistant</h1>
+            <h1>🤖 Trợ lý AI</h1>
             <div className="header-actions">
             </div>
           </header>

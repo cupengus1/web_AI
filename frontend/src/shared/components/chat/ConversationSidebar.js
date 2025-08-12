@@ -1,5 +1,12 @@
 import React from 'react';
 
+// Sidebar hiển thị danh sách cuộc trò chuyện và cho phép tạo/xoá/chọn cuộc trò chuyện
+// Props:
+// - conversations: danh sách các cuộc trò chuyện { id, title, messages[], updatedAt }
+// - activeConversationId: id cuộc trò chuyện đang chọn
+// - onSelectConversation: (id) => void — chọn 1 cuộc trò chuyện
+// - onDeleteConversation: (id) => void — xoá 1 cuộc trò chuyện
+// - onCreateNew: () => void — tạo cuộc trò chuyện mới
 const ConversationSidebar = ({ 
   conversations, 
   activeConversationId, 
@@ -29,6 +36,7 @@ const ConversationSidebar = ({
             <div
               key={conv.id}
               className={`conversation-item ${activeConversationId === conv.id ? 'active' : ''}`}
+              // Chọn cuộc trò chuyện khi click vào toàn bộ item
               onClick={() => onSelectConversation(conv.id)}
             >
               <div className="conv-content">
@@ -39,6 +47,7 @@ const ConversationSidebar = ({
               <button
                 onClick={(e) => {
                   e.stopPropagation();
+                  // Ngăn click lan ra ngoài và gọi xoá cuộc trò chuyện
                   onDeleteConversation(conv.id);
                 }}
                 className="delete-btn"

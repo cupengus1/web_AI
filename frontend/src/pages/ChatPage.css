@@ -1,9 +1,11 @@
 /* ChatPage.css */
 .chat-page {
-  height: 100vh;
+  /* Chiều cao = chiều cao màn hình trừ phần Header (≈80px) để tránh scroll toàn trang */
+  height: calc(100dvh - 80px);
   display: flex;
   flex-direction: column;
   background: #f5f7fa;
+  overflow: hidden; /* Chỉ cho phép khu vực nội dung chat tự cuộn */
 }
 
 .error-toast {
@@ -31,7 +33,8 @@
 
 .chat-layout {
   display: flex;
-  height: 100vh;
+  height: 100%; /* Kế thừa từ .chat-page để không vượt quá màn hình */
+  min-height: 0; /* Cho phép con bên trong co lại để cuộn nội bộ */
 }
 
 /* Sidebar */
@@ -164,6 +167,7 @@
   display: flex;
   flex-direction: column;
   background: white;
+  min-height: 0; /* Cho phép .chat-content cuộn đúng cách trong flex column */
 }
 
 .chat-header {
@@ -222,6 +226,7 @@
   overflow-y: auto;
   padding: 20px;
   background: #fafbfc;
+  overscroll-behavior: contain; /* Tránh cuộn lan ra ngoài */
 }
 
 .welcome-message {
@@ -261,8 +266,10 @@
 }
 
 .message-list {
-  max-width: 800px;
+  /* Trải rộng hơn để nội dung thoáng, vẫn căn giữa vùng nội dung */
+  max-width: 1000px;
   margin: 0 auto;
+  width: 100%;
 }
 
 .message {
@@ -272,11 +279,11 @@
 }
 
 .message.user {
-  justify-content: flex-end;
+  justify-content: flex-end; /* Người dùng về bên phải */
 }
 
 .message.ai {
-  justify-content: flex-start;
+  justify-content: flex-start; /* AI về bên trái */
 }
 
 .message-avatar {
@@ -300,8 +307,8 @@
 }
 
 .message-content {
-  max-width: 70%;
-  min-width: 100px;
+  max-width: 78%;
+  min-width: 120px;
 }
 
 .message.user .message-content {
@@ -310,7 +317,7 @@
 
 .message-text {
   background: white;
-  padding: 12px 16px;
+  padding: 14px 18px;
   border-radius: 18px;
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
   line-height: 1.6;
@@ -474,11 +481,15 @@
 
 /* Responsive */
 @media (max-width: 768px) {
+  /* Trên thiết bị nhỏ, Header cao ~60px */
+  .chat-page {
+    height: calc(100dvh - 60px);
+  }
   .chat-sidebar {
     width: 100%;
     position: absolute;
     z-index: 100;
-    height: 100vh;
+  height: 100%; /* Phù hợp với container thay vì 100vh để tránh tràn màn hình */
   }
   
   .suggestions {

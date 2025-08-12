@@ -13,13 +13,14 @@ import ProcedureForm from '../../../shared/components/admin/ProcedureForm';
 import ProceduresList from '../../../shared/components/admin/ProceduresList';
 import AdminUserManagement from './AdminUserManagement';
 
+// Trang quản trị gọn: điều hướng theo tab, CRUD quy trình, upload, danh mục, quản lý người dùng
 const AdminDashboard = () => {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('dashboard');
   const [selectedFile, setSelectedFile] = useState(null);
   const [filePreview, setFilePreview] = useState('');
 
-  // Admin logic
+  // Logic quản trị (tải dữ liệu, hành động)
   const {
     isLoggedIn,
     categories,
@@ -35,7 +36,7 @@ const AdminDashboard = () => {
     submitCategory
   } = useAdmin();
 
-  // Form management
+  // Quản lý form quy trình
   const INITIAL_FORM_STATE = {
     title: '',
     content: '',
@@ -52,14 +53,14 @@ const AdminDashboard = () => {
     setEditMode
   } = useForm(INITIAL_FORM_STATE);
 
-  // Enhanced reset with file cleanup
+  // Reset form và dọn dẹp file tạm/preview
   const resetForm = () => {
     resetFormData();
     setSelectedFile(null);
     setError('');
   };
 
-  // Handlers
+  // Xử lý sự kiện
   const handleLogout = () => {
     logout();
     resetForm();
@@ -122,7 +123,7 @@ const AdminDashboard = () => {
     resetForm();
   };
 
-  // Procedure management handlers
+  // Xử lý cho quản lý quy trình (sửa/xoá)
   const handleEditProcedure = (procedure) => {
     console.log('🔧 EDIT PROCEDURE:', procedure);
     const procedureData = {
@@ -147,12 +148,12 @@ const AdminDashboard = () => {
 
 
   
-  // Check if user has admin access
+  // Kiểm tra quyền truy cập admin
   if (!isLoggedIn) {
     return (
       <div className="admin-login">
         <div className="login-container">
-          <h2>🔒 Admin Access Required</h2>
+          <h2>🔒 Cần quyền Admin</h2>
           <p>Bạn cần đăng nhập với tài khoản admin để truy cập trang này.</p>
           <button onClick={() => navigate('/signin')} className="login-redirect-btn">
             Đăng nhập
@@ -165,25 +166,26 @@ const AdminDashboard = () => {
   return (
     <div className="admin-dashboard">
       <header className="admin-header">
-        <h1>Admin Panel kd.AI</h1>
+        <h1>Bảng điều khiển Admin kd.AI</h1>
         <div style={{ display: 'flex', gap: '10px' }}>
-          <button onClick={() => navigate('/dashboard')} className="logout-btn">Dashboard</button>
+          <button onClick={() => navigate('/dashboard')} className="logout-btn">Bảng điều khiển</button>
           <button onClick={handleLogout} className="logout-btn">Đăng xuất</button>
         </div>
       </header>
 
       <nav className="admin-nav">
         {[
-          { key: 'dashboard', label: 'Dashboard' },
-          { key: 'procedures', label: ' Quy trình' },
-          { key: 'upload', label: ' Upload' },
-          { key: 'categories', label: ' Danh mục' },
-          { key: 'users', label: ' Người dùng' }
+          { key: 'dashboard', label: '📊 Bảng điều khiển' },
+          { key: 'procedures', label: '📄 Quy trình' },
+          { key: 'upload', label: '⬆️ Tải lên' },
+          { key: 'categories', label: '🏷️ Danh mục' },
+          { key: 'users', label: '👤 Người dùng' }
         ].map(tab => (
           <button 
             key={tab.key}
             className={activeTab === tab.key ? 'active' : ''} 
             onClick={() => setActiveTab(tab.key)}
+            aria-selected={activeTab === tab.key}
           >
             {tab.label}
           </button>
@@ -346,25 +348,31 @@ const AdminDashboard = () => {
             </form>
             
             <div className="categories-list">
-              <h3>Danh mục hiện có:</h3>
+              <h3>Danh mục hiện có</h3>
               {categories.length > 0 ? (
-                <div className="categories-grid">
+                <ul className="category-list" role="list">
                   {categories.map(cat => (
-                    <div key={cat.id} className="category-card">
-                      <div className="category-header">
-                        <h4>{cat.name}</h4>
-                        <span className="category-id">#{cat.id}</span>
+                    <li key={cat.id} className="category-list-item">
+                      <div className="category-info">
+                        <div className="category-line">
+                          <strong className="category-name">{cat.name}</strong>
+                          <span className="category-id">#{cat.id}</span>
+                        </div>
+                        {cat.description && (
+                          <p className="category-desc">{cat.description}</p>
+                        )}
                       </div>
-                      <p>{cat.description}</p>
-                      <div className="category-footer">
-                        <small>Tạo: {new Date(cat.createdAt).toLocaleDateString()}</small>
+                      <div className="category-meta">
+                        <small>
+                          Tạo: {new Date(cat.createdAt || cat.created_at).toLocaleDateString('vi-VN')}
+                        </small>
                       </div>
-                    </div>
+                    </li>
                   ))}
-                </div>
+                </ul>
               ) : (
                 <div className="empty-state">
-                  <p> Chưa có danh mục nào</p>
+                  <p>Chưa có danh mục nào</p>
                   <small>Tạo danh mục đầu tiên để bắt đầu!</small>
                 </div>
               )}

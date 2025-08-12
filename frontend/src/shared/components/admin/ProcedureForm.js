@@ -1,6 +1,7 @@
 import React from 'react';
 import FormField from './FormField';
 
+// Form tạo/sửa một Quy trình (Procedure)
 const ProcedureForm = ({ 
   formData, 
   onFieldChange, 

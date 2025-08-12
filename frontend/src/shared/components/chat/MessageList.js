@@ -1,11 +1,11 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 
-// Function để format text AI cho dễ đọc
+// Hàm format nội dung phản hồi của AI sang HTML đơn giản (heading, bold, italic, list...)
 const formatAIResponse = (text) => {
   if (!text) return '';
   
   let formatted = text
-    // Thay thế ### thành heading
+  // Thay thế ### thành heading
     .replace(/###\s*(.+)/g, '<h4>$1</h4>')
     // Thay thế ** bold text **
     .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
@@ -28,7 +28,16 @@ const formatAIResponse = (text) => {
   return formatted;
 };
 
+// Danh sách tin nhắn giữa người dùng và AI
+// Props:
+// - messages: [{ id, type: 'user'|'ai', content, timestamp }]
+// - isLoading: boolean — hiển thị typing indicator khi AI đang trả lời
 const MessageList = ({ messages, isLoading }) => {
+  // Tự động cuộn xuống cuối khi có tin nhắn mới hoặc trạng thái đang gõ thay đổi
+  const endRef = useRef(null);
+  useEffect(() => {
+    endRef.current?.scrollIntoView({ behavior: 'smooth', block: 'end' });
+  }, [messages, isLoading]);
   if (messages.length === 0) {
     return (
       <div className="welcome-message">
@@ -45,7 +54,7 @@ const MessageList = ({ messages, isLoading }) => {
 
   return (
     <div className="message-list">
-      {messages.map(message => (
+  {messages.map(message => (
         <div key={message.id} className={`message ${message.type}`}>
           <div className="message-avatar">
             {message.type === 'user' ? '👤' : '🤖'}
@@ -66,7 +75,7 @@ const MessageList = ({ messages, isLoading }) => {
         </div>
       ))}
       
-      {isLoading && (
+  {isLoading && (
         <div className="message ai">
           <div className="message-avatar">🤖</div>
           <div className="message-content">
@@ -78,6 +87,8 @@ const MessageList = ({ messages, isLoading }) => {
           </div>
         </div>
       )}
+  {/* Mốc cuộn cuối danh sách */}
+  <div ref={endRef} />
     </div>
   );
 };

@@ -1,5 +1,6 @@
 import React from 'react';
 
+// Trường form tái sử dụng: input/textarea/select/file
 const FormField = ({ 
   label, 
   type = 'text', 

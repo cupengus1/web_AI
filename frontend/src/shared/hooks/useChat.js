@@ -9,92 +9,74 @@ export const useChat = () => {
   const [error, setError] = useState('');
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-  // Helper function to generate unique IDs
+  // Hàm tạo ID tạm (chỉ để hiển thị tạm thời trong UI)
   const generateId = () => Date.now().toString();
 
-  // Debug helper
+  // Hàm log debug (chỉ hoạt động ở môi trường development)
   const debug = (action, data) => {
     if (process.env.NODE_ENV === 'development') {
       console.log(`🐛 Chat Debug [${action}]:`, data);
     }
   };
 
-  // Check if user is logged in
+  // Kiểm tra trạng thái đăng nhập
   useEffect(() => {
     const token = localStorage.getItem('token');
     setIsLoggedIn(!!token);
   }, []);
 
-  // Load conversations from localStorage
+  // Đã loại bỏ chế độ cục bộ (localStorage)
   const loadLocalConversations = useCallback(() => {
-    const saved = localStorage.getItem('chatConversations');
-    if (saved) {
-      try {
-        const parsed = JSON.parse(saved);
-        debug('LOAD_LOCAL_CONVERSATIONS', parsed);
-        setConversations(parsed);
-        if (parsed.length > 0) {
-          setActiveConversationId(parsed[0].id);
-          setCurrentMessages(parsed[0].messages);
-        }
-      } catch (error) {
-        debug('LOAD_LOCAL_ERROR', error);
-      }
-    }
+    setConversations([]);
+    setActiveConversationId(null);
+    setCurrentMessages([]);
   }, []);
 
-  // Load conversations from server if logged in, otherwise from localStorage
+  // Tải hội thoại từ máy chủ
   const loadConversations = useCallback(async () => {
-    if (isLoggedIn) {
-      try {
-        const response = await getChatHistory();
-        const serverConversations = response.data.conversations || [];
-        
-        // Convert MongoDB format to client format
-        const clientConversations = serverConversations.map(conv => ({
-          id: conv.id || conv._id,
-          title: conv.title,
-          messages: conv.messages.map(msg => ({
-            id: msg.id || msg._id,
-            content: msg.content,
-            type: msg.role === 'user' ? 'user' : 'ai',
-            timestamp: new Date(msg.timestamp)
-          })),
-          createdAt: new Date(conv.created_at || conv.createdAt),
-          updatedAt: new Date(conv.updated_at || conv.updatedAt)
-        }));
-        
-        setConversations(clientConversations);
-        if (clientConversations.length > 0) {
-          setActiveConversationId(clientConversations[0].id);
-          setCurrentMessages(clientConversations[0].messages);
-        }
-        
-        debug('LOAD_SERVER_CONVERSATIONS', clientConversations);
-      } catch (error) {
-        debug('LOAD_SERVER_ERROR', error);
-        // Fall back to localStorage
-        loadLocalConversations();
-      }
-    } else {
+    if (!isLoggedIn) {
       loadLocalConversations();
+      return;
+    }
+    try {
+      const response = await getChatHistory();
+      const serverConversations = response.data.conversations || [];
+      const clientConversations = serverConversations.map(conv => ({
+        id: conv.id || conv._id,
+        title: conv.title,
+        messages: conv.messages.map(msg => ({
+          id: msg.id || msg._id,
+          content: msg.content,
+          type: msg.role === 'user' ? 'user' : 'ai',
+          timestamp: new Date(msg.timestamp)
+        })),
+        createdAt: new Date(conv.created_at || conv.createdAt),
+        updatedAt: new Date(conv.updated_at || conv.updatedAt)
+      }));
+      setConversations(clientConversations);
+      if (clientConversations.length > 0) {
+        setActiveConversationId(clientConversations[0].id);
+        setCurrentMessages(clientConversations[0].messages);
+      } else {
+        setActiveConversationId(null);
+        setCurrentMessages([]);
+      }
+      debug('LOAD_SERVER_CONVERSATIONS', clientConversations);
+    } catch (error) {
+      debug('LOAD_SERVER_ERROR', error);
+      setConversations([]);
+      setActiveConversationId(null);
+      setCurrentMessages([]);
     }
   }, [isLoggedIn, loadLocalConversations]);
 
+  // Đã loại bỏ chức năng nhập (import) hội thoại từ localStorage
+
   const createNewConversation = useCallback(() => {
-    debug('CREATE_CONVERSATION', 'Creating new conversation');
-    const newConv = {
-      id: generateId(),
-      title: 'Cuộc trò chuyện mới',
-      messages: [],
-      createdAt: new Date(),
-      updatedAt: new Date()
-    };
-    
-    setConversations(prev => [newConv, ...prev]);
-    setActiveConversationId(newConv.id);
+    // Máy chủ sẽ tạo hội thoại khi gửi tin nhắn đầu tiên
+    debug('CREATE_CONVERSATION', 'Chuẩn bị hội thoại mới');
+    setActiveConversationId(null);
     setCurrentMessages([]);
-    debug('CREATE_CONVERSATION_SUCCESS', newConv);
   }, []);
 
   const selectConversation = useCallback((convId) => {
@@ -155,20 +137,8 @@ export const useChat = () => {
     setIsLoading(true);
     setError('');
 
-    // Tạo conversation nếu chưa có
-    let convId = activeConversationId;
-    if (!convId) {
-      const newConv = {
-        id: generateId(),
-        title: 'Cuộc trò chuyện mới',
-        messages: [],
-        createdAt: new Date(),
-        updatedAt: new Date()
-      };
-      setConversations(prev => [newConv, ...prev]);
-      convId = newConv.id;
-      setActiveConversationId(convId);
-    }
+  // Máy chủ sẽ tạo cuộc trò chuyện nếu chưa có
+  const convId = activeConversationId;
 
     const userMessage = {
       id: generateId(),
@@ -180,7 +150,7 @@ export const useChat = () => {
     const updatedMessages = [...currentMessages, userMessage];
     setCurrentMessages(updatedMessages);
 
-    // Update title với message đầu tiên
+  // Cập nhật tiêu đề với tin nhắn đầu tiên
     if (updatedMessages.length === 1) {
       updateConversationTitle(convId, userMessage.content);
     }
@@ -188,23 +158,11 @@ export const useChat = () => {
     try {
       debug('CALLING_AI', userMessage.content);
       
-      let response;
-      if (isLoggedIn) {
-        // For logged in users, pass conversation ID if exists for MongoDB storage
-        const conversationIdForServer = convId && convId.length === 24 ? convId : null;
-        response = await sendChatMessage(userMessage.content, conversationIdForServer);
-      } else {
-        // For anonymous users, use public endpoint
-        response = await sendChatMessage(userMessage.content);
-      }
+  const conversationIdForServer = convId && convId.length === 24 ? convId : null;
+  const response = await sendChatMessage(userMessage.content, conversationIdForServer);
 
-      // Handle different response formats for authenticated vs anonymous users
-      let aiContent;
-      if (isLoggedIn) {
-        aiContent = response.data?.response || 'Xin lỗi, tôi không thể trả lời câu hỏi này.';
-      } else {
-        aiContent = response.data?.answer || response.data?.response || 'Xin lỗi, tôi không thể trả lời câu hỏi này.';
-      }
+  // Xử lý nội dung trả về
+  const aiContent = response.data?.response || response.data?.answer || 'Xin lỗi, tôi không thể trả lời câu hỏi này.';
 
       const aiMessage = {
         id: generateId(),
@@ -216,8 +174,8 @@ export const useChat = () => {
       const finalMessages = [...updatedMessages, aiMessage];
       setCurrentMessages(finalMessages);
 
-      // If logged in and server returned a conversation, update our state with server data
-      if (isLoggedIn && response.data?.conversation) {
+  // Cập nhật state theo dữ liệu từ máy chủ nếu có
+      if (response.data?.conversation) {
         const serverConv = response.data.conversation;
         const updatedConv = {
           id: serverConv.id || serverConv._id,
@@ -238,12 +196,8 @@ export const useChat = () => {
         setActiveConversationId(updatedConv.id);
         setCurrentMessages(updatedConv.messages);
       } else {
-        // Update local conversation (for anonymous users or when server doesn't return conversation)
-        setConversations(prev => prev.map(conv => 
-          conv.id === convId 
-            ? { ...conv, messages: finalMessages, updatedAt: new Date() }
-            : conv
-        ));
+        // Dự phòng: tải lại toàn bộ lịch sử để đồng bộ
+        await loadConversations();
       }
 
       debug('AI_RESPONSE_SUCCESS', aiMessage);
@@ -252,7 +206,7 @@ export const useChat = () => {
       debug('AI_ERROR', error);
       showError(error);
       
-      const errorMessage = {
+  const errorMessage = {
         id: generateId(),
         content: 'Xin lỗi, có lỗi xảy ra khi kết nối với AI. Vui lòng thử lại.',
         type: 'ai',
@@ -262,28 +216,18 @@ export const useChat = () => {
       const finalMessages = [...updatedMessages, errorMessage];
       setCurrentMessages(finalMessages);
       
-      setConversations(prev => prev.map(conv => 
-        conv.id === convId 
-          ? { ...conv, messages: finalMessages, updatedAt: new Date() }
-          : conv
-      ));
+  // Giữ bong bóng lỗi trong khung chat
     } finally {
       setIsLoading(false);
     }
-  }, [activeConversationId, currentMessages, updateConversationTitle, showError, isLoggedIn]);
+  }, [activeConversationId, currentMessages, updateConversationTitle, showError, isLoggedIn, loadConversations]);
 
   // Load conversations when component mounts or login status changes
   useEffect(() => {
     loadConversations();
   }, [loadConversations]);
 
-  // Save conversations to localStorage for anonymous users
-  useEffect(() => {
-    if (!isLoggedIn && conversations.length > 0) {
-      localStorage.setItem('chatConversations', JSON.stringify(conversations));
-      debug('SAVE_CONVERSATIONS_LOCAL', conversations);
-    }
-  }, [conversations, isLoggedIn]);
+  // Removed: no local persistence
 
   return {
     // State

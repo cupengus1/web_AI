@@ -7,7 +7,7 @@ const api = axios.create({
   baseURL: API_BASE_URL,
 });
 
-// Interceptor để gắn token vào Header tự động
+// Interceptor: tự động gắn token vào Header
 api.interceptors.request.use((config) => {
   // Kiểm tra admin token trước
   const adminToken = localStorage.getItem("adminToken");

@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { login, adminLogin } from '../../../shared/api/api';
 import "./SignInPage.css"
 
+// Trang Đăng nhập: thử đăng nhập admin trước, nếu không thành công thì đăng nhập user thường
 function SignInPage() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -19,23 +20,29 @@ function SignInPage() {
             // Thử đăng nhập admin trước
             try {
                 const adminResponse = await adminLogin(email, password);
-                console.log('Admin login successful');
+                console.log('Đăng nhập admin thành công');
                 localStorage.setItem("adminToken", adminResponse.data.token);
                 navigate('/admin');
                 return;
             } catch (adminError) {
                 // Nếu không phải admin, thử đăng nhập user
-                console.log('Not admin, trying user login...');
+                console.log('Không phải admin, thử đăng nhập người dùng...');
             }
 
             // Thử đăng nhập user
             const userResponse = await login(email, password);
-            console.log('User login successful');
+            console.log('Đăng nhập người dùng thành công');
             localStorage.setItem("token", userResponse.data.token);
+            // Lưu thông tin người dùng để hiển thị lời chào
+            if (userResponse.data && userResponse.data.user) {
+                try {
+                    localStorage.setItem("user", JSON.stringify(userResponse.data.user));
+                } catch {}
+            }
             navigate('/dashboard');
 
         } catch (error) {
-            console.error('Login error:', error);
+            console.error('Lỗi đăng nhập:', error);
             setError('Email hoặc mật khẩu không đúng!');
         } finally {
             setIsLoading(false);

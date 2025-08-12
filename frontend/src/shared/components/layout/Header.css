@@ -134,16 +134,13 @@
   box-shadow: 0 2px 8px 0 rgba(33,150,243,0.10);
 }
 .logout-btn {
-  background: #fff;
-  color: #1976d2;
-  padding: 14px 36px;
-  border-radius: 28px;
-  cursor: pointer;
-  font-size: 1.1rem;
-  font-weight: 800;
-  border: none;
-  box-shadow: 0 2px 8px 0 rgba(33,150,243,0.06);
-  transition: all 0.2s;
+    color: #ffffff;
+    font-size: 1.1rem;
+    font-weight: 800;
+    background: #ff0000;
+    padding: 12px 36px;
+    border-radius: 28px;
+    box-shadow: 0 2px 8px 0 rgba(33, 150, 243, 0.10);
 }
 .logout-btn:hover {
   background: #e3f2fd;
