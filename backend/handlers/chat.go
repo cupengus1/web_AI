@@ -10,6 +10,25 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
+// helper: extract user hex id from context (supports ObjectID or string)
+func getUserHexFromContext(c *gin.Context) (string, bool) {
+	uid, exists := c.Get("user_id")
+	if !exists {
+		return "", false
+	}
+	switch v := uid.(type) {
+	case primitive.ObjectID:
+		return v.Hex(), true
+	case string:
+		if primitive.IsValidObjectID(v) {
+			return v, true
+		}
+		return "", false
+	default:
+		return "", false
+	}
+}
+
 // HandleAIChat handles AI chat with optional conversation persistence
 func HandleAIChat(c *gin.Context) {
 	var req models.ChatRequest
@@ -20,10 +39,8 @@ func HandleAIChat(c *gin.Context) {
 
 	// Lấy user ID từ JWT middleware (nếu có)
 	var userID string
-	if uid, exists := c.Get("user_id"); exists {
-		if objID, ok := uid.(primitive.ObjectID); ok {
-			userID = objID.Hex()
-		}
+	if hex, ok := getUserHexFromContext(c); ok {
+		userID = hex
 	}
 
 	// 🤖 Use RAG-enhanced AI call
@@ -62,19 +79,15 @@ func HandleAIChat(c *gin.Context) {
 
 // GetChatHistory retrieves user's chat history
 func GetChatHistory(c *gin.Context) {
-	userID, exists := c.Get("user_id")
-	if !exists {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
-		return
-	}
-
-	objID, ok := userID.(primitive.ObjectID)
+	hex, ok := getUserHexFromContext(c)
 	if !ok {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid user ID"})
+		// Trả về rỗng để tránh 400 khi dùng token admin hoặc thiếu user id hợp lệ
+		response := models.ChatHistoryResponse{Conversations: []models.ChatConversation{}, Total: 0}
+		c.JSON(http.StatusOK, response)
 		return
 	}
 
-	conversations, err := services.GetUserChatHistory(objID.Hex())
+	conversations, err := services.GetUserChatHistory(hex)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -90,20 +103,14 @@ func GetChatHistory(c *gin.Context) {
 
 // GetChatConversation retrieves a specific conversation
 func GetChatConversation(c *gin.Context) {
-	userID, exists := c.Get("user_id")
-	if !exists {
+	hex, ok := getUserHexFromContext(c)
+	if !ok {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
 		return
 	}
 
-	objID, ok := userID.(primitive.ObjectID)
-	if !ok {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid user ID"})
-		return
-	}
-
 	conversationID := c.Param("id")
-	conversation, err := services.GetChatConversation(objID.Hex(), conversationID)
+	conversation, err := services.GetChatConversation(hex, conversationID)
 	if err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": "Conversation not found"})
 		return
@@ -114,20 +121,14 @@ func GetChatConversation(c *gin.Context) {
 
 // DeleteChatConversation deletes a conversation
 func DeleteChatConversation(c *gin.Context) {
-	userID, exists := c.Get("user_id")
-	if !exists {
+	hex, ok := getUserHexFromContext(c)
+	if !ok {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
 		return
 	}
 
-	objID, ok := userID.(primitive.ObjectID)
-	if !ok {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid user ID"})
-		return
-	}
-
 	conversationID := c.Param("id")
-	err := services.DeleteChatConversation(objID.Hex(), conversationID)
+	err := services.DeleteChatConversation(hex, conversationID)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return

@@ -9,17 +9,20 @@ const api = axios.create({
 
 // Interceptor: tự động gắn token vào Header
 api.interceptors.request.use((config) => {
-  // Kiểm tra admin token trước
+  const url = config.url || "";
+  const isAdminAPI = url.startsWith("/api/admin");
+
+  // Ưu tiên: API admin dùng adminToken; API thường dùng user token
   const adminToken = localStorage.getItem("adminToken");
-  if (adminToken) {
-    config.headers.Authorization = `Bearer ${adminToken}`;
-    return config;
-  }
-  
-  // Nếu không có admin token, kiểm tra user token
   const userToken = localStorage.getItem("token");
-  if (userToken) {
+
+  if (isAdminAPI && adminToken) {
+    config.headers.Authorization = `Bearer ${adminToken}`;
+  } else if (userToken) {
     config.headers.Authorization = `Bearer ${userToken}`;
+  } else if (isAdminAPI && adminToken) {
+    // fallback redundant (kept for clarity)
+    config.headers.Authorization = `Bearer ${adminToken}`;
   }
   return config;
 });
@@ -65,7 +68,14 @@ export const sendChatMessage = (message, conversationId = null) => {
   }
 };
 
-export const getChatHistory = () => api.get("/api/chat/history");
+export const getChatHistory = () => {
+  const userToken = localStorage.getItem("token");
+  if (!userToken) {
+    // Trả về rỗng để UI không cần gọi server khi ẩn danh
+    return Promise.resolve({ data: { conversations: [], total: 0 } });
+  }
+  return api.get("/api/chat/history");
+};
 export const getChatConversation = (id) => api.get(`/api/chat/conversations/${id}`);
 export const deleteChatConversation = (id) => api.delete(`/api/chat/conversations/${id}`);
 

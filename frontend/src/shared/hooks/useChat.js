@@ -26,14 +26,16 @@ export const useChat = () => {
   }, []);
 
   // Đã loại bỏ chế độ cục bộ (localStorage)
+  // Với người dùng chưa đăng nhập: giữ nguyên khung chat hiện tại, không reset messages
   const loadLocalConversations = useCallback(() => {
     setConversations([]);
     setActiveConversationId(null);
-    setCurrentMessages([]);
+    // Không xóa currentMessages để tránh trở lại giao diện chờ trong khi đang chat ẩn danh
   }, []);
 
   // Tải hội thoại từ máy chủ
   const loadConversations = useCallback(async () => {
+    // Người dùng chưa đăng nhập: không gọi API lịch sử, giữ nguyên trạng thái hiện tại
     if (!isLoggedIn) {
       loadLocalConversations();
       return;
@@ -64,9 +66,7 @@ export const useChat = () => {
       debug('LOAD_SERVER_CONVERSATIONS', clientConversations);
     } catch (error) {
       debug('LOAD_SERVER_ERROR', error);
-      setConversations([]);
-      setActiveConversationId(null);
-      setCurrentMessages([]);
+      // Không reset khung chat khi lỗi (ví dụ 400/401) để tránh nhảy về giao diện chờ
     }
   }, [isLoggedIn, loadLocalConversations]);
 
@@ -174,8 +174,8 @@ export const useChat = () => {
       const finalMessages = [...updatedMessages, aiMessage];
       setCurrentMessages(finalMessages);
 
-  // Cập nhật state theo dữ liệu từ máy chủ nếu có
-      if (response.data?.conversation) {
+  // Cập nhật state theo dữ liệu từ máy chủ nếu có (chỉ áp dụng khi đã đăng nhập)
+      if (isLoggedIn && response.data?.conversation) {
         const serverConv = response.data.conversation;
         const updatedConv = {
           id: serverConv.id || serverConv._id,
@@ -195,8 +195,8 @@ export const useChat = () => {
         ));
         setActiveConversationId(updatedConv.id);
         setCurrentMessages(updatedConv.messages);
-      } else {
-        // Dự phòng: tải lại toàn bộ lịch sử để đồng bộ
+      } else if (isLoggedIn) {
+        // Dự phòng: tải lại toàn bộ lịch sử để đồng bộ (đã đăng nhập)
         await loadConversations();
       }
 
